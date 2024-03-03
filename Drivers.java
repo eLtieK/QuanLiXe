@@ -31,4 +31,8 @@ public class Drivers {
         this.experiences = experiences;
         this.status = Status.ready;
     }
+    
+    public void changeName(String new_name) {
+        this.name = new_name;
+    }
 }
