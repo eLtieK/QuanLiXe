@@ -12,16 +12,12 @@ public class Trip {
         on_trip,
         waiting
     }    
-    private Vehicles vehicle;
-    private Drivers driver;
     private String time_start;
     private String destination;
     private String expected_time; //du kien thoi gian den
     private Status status;
     
-    Trip(Vehicles vehicle, Drivers driver, String time_start, String destination) {
-        this.vehicle = vehicle;
-        this.driver = driver;
+    Trip(String time_start, String destination) {
         this.time_start = time_start;
         this.destination = destination;
         this.status = Status.waiting;
