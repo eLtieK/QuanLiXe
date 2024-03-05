@@ -13,10 +13,12 @@ public class ManagementSystem {
     private List<Vehicles> vehicles;
     private List<Drivers> drivers;
     private List<Trip> trips;
+    private List<Users> users;
     
-    public ManagementSystem(List<Vehicles> vehicles, List<Drivers> drivers, List<Trip> trips) {
+    public ManagementSystem(List<Vehicles> vehicles, List<Drivers> drivers, List<Trip> trips, List<Users> users) {
         this.vehicles = vehicles;
         this.drivers = drivers;
         this.trips = trips;
+        this.users = users;
     }
 }
