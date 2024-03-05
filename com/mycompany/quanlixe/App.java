@@ -9,28 +9,19 @@ import com.google.firebase.FirebaseOptions;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class App {
-    public static void initFirebase() throws IOException{
-        FileInputStream refreshToken = null;
-        try {
-            refreshToken = new FileInputStream("cridentials .json");     
+    public static void initFirebase() throws FileNotFoundException, IOException{
+        if(FirebaseApp.getApps().isEmpty()) {
+            FileInputStream refreshToken = new FileInputStream("cridentials .json");
+
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(refreshToken))
-                    .setDatabaseUrl("https://quanlixe-9970a-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                    .build();
+                .setCredentials(GoogleCredentials.fromStream(refreshToken))
+                .setDatabaseUrl("https://quanlixe-9970a-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                .build();
+
             FirebaseApp.initializeApp(options);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                refreshToken.close();
-            } catch (IOException ex) {
-                Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } 
+        }
     }
     public String getGreeting() {
         return "Hello World!";
