@@ -4,6 +4,11 @@
 package com.mycompany.quanlixe;
 
 public class App {
+//    private ManagementSystem manager;
+   
+    private App() {
+        
+    }
     public String getGreeting() {
         return "Hello World!";
     }

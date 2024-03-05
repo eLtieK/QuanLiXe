@@ -19,4 +19,8 @@ public class Users {
         this.phone_number = phone_number;
         this.email = email;
     }
+    
+    public String get_name() {
+        return this.username;
+    }
 }
