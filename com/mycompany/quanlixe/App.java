@@ -3,26 +3,7 @@
  */
 package com.mycompany.quanlixe;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 public class App {
-    public static void initFirebase() throws FileNotFoundException, IOException{
-        if(FirebaseApp.getApps().isEmpty()) {
-            FileInputStream refreshToken = new FileInputStream("cridentials .json");
-
-            FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(refreshToken))
-                .setDatabaseUrl("https://quanlixe-9970a-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                .build();
-
-            FirebaseApp.initializeApp(options);
-        }
-    }
     public String getGreeting() {
         return "Hello World!";
     }
