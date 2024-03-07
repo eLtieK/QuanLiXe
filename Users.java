@@ -8,10 +8,10 @@
  * @author Admin
  */
 public class Users {
-    private String username;
-    private String password;
-    private String phone_number;
-    private String email;
+    public String username;
+    public String password;
+    public String phone_number;
+    public String email;
     
     public Users(String username, String password, String phone_number, String email) {
         this.username = username;
