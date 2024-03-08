@@ -12,23 +12,32 @@ public class App {
     App() throws IOException {
 
     }
-    
+    private String input() {
+        Scanner scanner = new Scanner(System.in);
+        String temp_string = scanner.nextLine();
+        scanner.close();
+        return temp_string;
+    }
     public String getGreeting() {
         return "Hello World!";
     }
-
+    public  void wait_system_load() {
+        Scanner scanner = new Scanner(System.in);
+        while(!scanner.nextLine().equals("Quit")){} //Quit de tiep tuc
+    }
     public static void main(String[] args) throws IOException, InterruptedException{
-        System.out.println(new App().getGreeting());
-        ManagementSystem myManager = new ManagementSystem();
+        App myApp = new App();
+        ManagementSystem myManager = new ManagementSystem(); 
+        
+        System.out.println(myApp.getGreeting());
+        myApp.wait_system_load();
+        
         myManager.save_user_data(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
         myManager.save_user_data(new Users("cun", "cun123", "0123456789", "baoanh@gmai.com"));
         myManager.save_user_data(new Users("lebao", "baole321", "0908331349", "baolelb@gamil.com"));
         myManager.save_user_data(new Users("xuanhai", "hai1010", "0917220886", "haixuan@gamil.com"));
         
-        Scanner scanner = new Scanner(System.in);
-        
-        while(!scanner.nextLine().equals("Quit")){}
+        myApp.wait_system_load();
         myManager.read_user_data();
-        scanner.close();
     }
 }

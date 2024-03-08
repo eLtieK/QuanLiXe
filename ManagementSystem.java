@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.lang.reflect.Type;
+import java.util.Scanner;
 
 public class ManagementSystem {
     private DatabaseReference myRef;
@@ -49,16 +50,12 @@ public class ManagementSystem {
         this.myRef = FirebaseDatabase.getInstance().getReference();
         this.usersManager = new HashMap<>();
     }
-    public void save_user_data(Users new_user) throws InterruptedException {
-        DatabaseReference usersRef = this.myRef.child("users");
-        usersRef.push().setValueAsync(new_user);
-    }
     private void load_user_data() {
         DatabaseReference usersRef = this.myRef.child("users");
         
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {   
+            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
                 String jsonString = snapshot.getValue().toString();
                 Type type = new TypeToken<Map<String, Users>>() {}.getType();
                 usersManager = new Gson().fromJson(jsonString, type);
@@ -71,14 +68,37 @@ public class ManagementSystem {
             
         });
     }
+    
+    public void save_user_data(Users new_user) throws InterruptedException {
+        DatabaseReference usersRef = this.myRef.child("users");
+        if(check_login_user(new_user.username, new_user.password)) {
+            System.out.println("Account had been signed");
+            return ;
+        }
+        usersRef.push().setValueAsync(new_user);
+    }
     public void read_user_data() {
         if(usersManager.isEmpty()) {
-            System.out.println("Empty");
+            System.out.println("Read_Empty");
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) {
             System.out.println("Name: " + userEntry.getValue().username
                                 + ", Email: " + userEntry.getValue().email
                                 + ", Phone number: " + userEntry.getValue().phone_number);
         }
+    }
+    public boolean check_login_user(String temp_username, String temp_password) {
+        if(usersManager.isEmpty()) {
+            System.out.println("Check_Empty");
+            return false;
+        }
+        for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
+            if(userEntry.getValue().username == temp_username) {
+                if(userEntry.getValue().password == temp_password) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
