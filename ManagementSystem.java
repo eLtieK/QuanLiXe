@@ -22,18 +22,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import java.lang.reflect.Type;
 
 public class ManagementSystem {
-    private List<Vehicles> vehicles;
-    private List<Drivers> drivers;
-    private List<Trip> trips;
-    private List<Users> users;
     private DatabaseReference myRef;
-    
     public Map<String, Users> usersManager;
     
     ManagementSystem() throws IOException {
@@ -41,16 +35,6 @@ public class ManagementSystem {
         setup_Firebase_reference();
         load_user_data();
     }    
-    ManagementSystem(List<Vehicles> vehicles, List<Drivers> drivers, List<Trip> trips, List<Users> users) throws IOException {
-        this.vehicles = vehicles;
-        this.drivers = drivers;
-        this.trips = trips;
-        this.users = users;
-        init_Firebase();
-        setup_Firebase_reference();
-        load_user_data();
-    }
-    
     private void init_Firebase() throws FileNotFoundException, IOException{
             FileInputStream serviceAccount = new FileInputStream("credentials.json");
 
