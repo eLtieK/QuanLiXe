@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class ManagementSystem {
         setup_Firebase_reference();
         load_user_data();
     }    
-    private void init_Firebase() throws FileNotFoundException, IOException{
+    private void init_Firebase() throws IOException{
             FileInputStream serviceAccount = new FileInputStream("credentials.json");
 
             FirebaseOptions options = FirebaseOptions.builder()
@@ -49,10 +48,10 @@ public class ManagementSystem {
         this.myRef = FirebaseDatabase.getInstance().getReference();
         this.usersManager = new HashMap<>();
     }
-    private void load_user_data() {
+    private void load_user_data() { //load data tu firebase vao map usersManager
         DatabaseReference usersRef = this.myRef.child("users");
         
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
             @Override
             public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
                 String jsonString = snapshot.getValue().toString();
@@ -62,14 +61,14 @@ public class ManagementSystem {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(DatabaseError error) { //xu li loi
                 System.err.println("Error while reading: " + error.getMessage());
             }
             
         });
     }
-    public void save_user_data(Users new_user) throws InterruptedException {
-        DatabaseReference usersRef = this.myRef.child("users");
+    public void save_user_data(Users new_user) {
+        DatabaseReference usersRef = this.myRef.child("users"); //duong dan toi nut users
         if(check_login_user(new_user.username, new_user.password)) {
             System.out.println("Account had been signed");
             return ;
@@ -79,7 +78,7 @@ public class ManagementSystem {
         usersRef.child(new_key).setValueAsync(new_user);
         usersManager.put(new_key, new_user);
     }
-    public String get_user_key(String temp_username, String temp_password) {
+    private String get_user_key(String temp_username, String temp_password) {
         if(usersManager.isEmpty()) {
             System.out.println("Check_Empty");  
         }
@@ -92,35 +91,29 @@ public class ManagementSystem {
         }
         return "";
     }
-    public void delete_user_data(Users user) {
-        DatabaseReference usersRef = this.myRef.child("users");
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
-                for (DataSnapshot childSnapshot : snapshot.getChildren())
-                    for (DataSnapshot userSnapshot : childSnapshot.getChildren())
-                    System.out.println(userSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                System.err.println("Error while reading: " + error.getMessage());
-            }
-            
-        });
+    public void delete_user_data(String temp_username, String temp_password) {
+        String key = get_user_key(temp_username, temp_password);
+        if(key.equals("")) {
+            System.out.println("No account available");  
+            return ;
+        }
+        DatabaseReference deleteRef = this.myRef.child("users").child(key);
+        deleteRef.removeValueAsync();
+        usersManager.remove(key);
+        System.out.println("Deleted succesfully key " + key);
     }
     public void read_user_data() {
         if(usersManager.isEmpty()) {
             System.out.println("Read_Empty");
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) {
-            System.out.print("Key: " + userEntry.getKey() + " ");
+//          System.out.print("Key: " + userEntry.getKey() + " ");
             System.out.println("Name: " + userEntry.getValue().username
                                 + ", Email: " + userEntry.getValue().email
                                 + ", Phone number: " + userEntry.getValue().phone_number);
         }
     }
-    public boolean check_login_user(String temp_username, String temp_password) {
+    private boolean check_login_user(String temp_username, String temp_password) { //da co tai khoan ton tai chua
         if(usersManager.isEmpty()) {
             System.out.println("Check_Empty");
             return false;

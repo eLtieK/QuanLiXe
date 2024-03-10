@@ -15,7 +15,6 @@ public class App {
     private String input() {
         Scanner scanner = new Scanner(System.in);
         String temp_string = scanner.nextLine();
-        scanner.close();
         return temp_string;
     }
     public String getGreeting() {
@@ -37,7 +36,7 @@ public class App {
         myManager.save_user_data(new Users("lebao", "baole321", "0908331349", "baolelb@gamil.com"));
         myManager.save_user_data(new Users("xuanhai", "hai1010", "0917220886", "haixuan@gamil.com"));
         
-//        myManager.delete_user_data(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
+        myManager.delete_user_data("kiet", "kentom");
         
         myApp.wait_system_load();
         myManager.read_user_data();
