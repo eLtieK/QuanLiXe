@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.lang.reflect.Type;
-import java.util.Scanner;
 
 public class ManagementSystem {
     private DatabaseReference myRef;
@@ -59,6 +58,7 @@ public class ManagementSystem {
                 String jsonString = snapshot.getValue().toString();
                 Type type = new TypeToken<Map<String, Users>>() {}.getType();
                 usersManager = new Gson().fromJson(jsonString, type);
+                System.out.println("Data loaded succesfully");
             }
 
             @Override
@@ -68,20 +68,53 @@ public class ManagementSystem {
             
         });
     }
-    
     public void save_user_data(Users new_user) throws InterruptedException {
         DatabaseReference usersRef = this.myRef.child("users");
         if(check_login_user(new_user.username, new_user.password)) {
             System.out.println("Account had been signed");
             return ;
         }
-        usersRef.push().setValueAsync(new_user);
+        System.out.println("New account have been signed succesfully");
+        String new_key = usersRef.push().getKey();
+        usersRef.child(new_key).setValueAsync(new_user);
+        usersManager.put(new_key, new_user);
+    }
+    public String get_user_key(String temp_username, String temp_password) {
+        if(usersManager.isEmpty()) {
+            System.out.println("Check_Empty");  
+        }
+        for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
+            if(userEntry.getValue().username.equals(temp_username)) { //so sanh 2 string giong nhau ko
+                if(userEntry.getValue().password.equals(temp_password)) {
+                    return userEntry.getKey();
+                }
+            }
+        }
+        return "";
+    }
+    public void delete_user_data(Users user) {
+        DatabaseReference usersRef = this.myRef.child("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
+                for (DataSnapshot childSnapshot : snapshot.getChildren())
+                    for (DataSnapshot userSnapshot : childSnapshot.getChildren())
+                    System.out.println(userSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                System.err.println("Error while reading: " + error.getMessage());
+            }
+            
+        });
     }
     public void read_user_data() {
         if(usersManager.isEmpty()) {
             System.out.println("Read_Empty");
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) {
+            System.out.print("Key: " + userEntry.getKey() + " ");
             System.out.println("Name: " + userEntry.getValue().username
                                 + ", Email: " + userEntry.getValue().email
                                 + ", Phone number: " + userEntry.getValue().phone_number);
@@ -93,8 +126,8 @@ public class ManagementSystem {
             return false;
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
-            if(userEntry.getValue().username == temp_username) {
-                if(userEntry.getValue().password == temp_password) {
+            if(userEntry.getValue().username.equals(temp_username)) { //so sanh 2 string giong nhau ko
+                if(userEntry.getValue().password.equals(temp_password)) {
                     return true;
                 }
             }
