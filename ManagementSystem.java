@@ -127,4 +127,12 @@ public class ManagementSystem {
         }
         return false;
     }
+	// Add an object to Firebase, with Object class name as key and all of its variables as value.
+	public void add(Object obj) throws IllegalAccessException {
+    	String className = obj.getClass().getSimpleName();
+        DatabaseReference classRef = this.myRef.child(className); 
+		Map<String, Object> objectMap = Manager.getObjectFieldsMap(obj);
+		String new_key = classRef.push().getKey();
+		classRef.child(new_key).setValueAsync(objectMap);
+	}
 }
