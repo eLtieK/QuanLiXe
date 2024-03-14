@@ -25,20 +25,32 @@ public class App {
         while(!scanner.nextLine().equals("Quit")){} //Quit de tiep tuc
     }
     public static void main(String[] args) throws IOException, InterruptedException{
-        App myApp = new App();
-        ManagementSystem myManager = new ManagementSystem(); 
-        
-        System.out.println(myApp.getGreeting());
-        myApp.wait_system_load();
-        
-        myManager.save_user_data(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
-        myManager.save_user_data(new Users("cun", "cun123", "0123456789", "baoanh@gmai.com"));
-        myManager.save_user_data(new Users("lebao", "baole321", "0908331349", "baolelb@gamil.com"));
-        myManager.save_user_data(new Users("xuanhai", "hai1010", "0917220886", "haixuan@gamil.com"));
-        
-        myManager.delete_user_data("kiet", "kentom");
-        
-        myApp.wait_system_load();
-        myManager.read_user_data();
+          App myApp = new App();
+//        FirebaseSystem myManager = new FirebaseSystem(); 
+//        
+//        System.out.println(myApp.getGreeting());
+//        myApp.wait_system_load();
+//        
+//        myManager.save_user_data(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
+//        myManager.save_user_data(new Users("cun", "cun123", "0123456789", "baoanh@gmai.com"));
+//        myManager.save_user_data(new Users("lebao", "baole321", "0908331349", "baolelb@gamil.com"));
+//        myManager.save_user_data(new Users("xuanhai", "hai1010", "0917220886", "haixuan@gamil.com"));
+//        
+//        myManager.delete_user_data("kiet", "kentom");
+//        
+//        myApp.wait_system_load();
+//        myManager.read_user_data();
+            Manager manager = Manager.getInstance();
+            myApp.wait_system_load();
+            manager.addVehicle(new Vehicles(1, 1, Vehicles.Fuel.diesel, Vehicles.Type.truck));
+            manager.addVehicle(new Vehicles(2, 2, Vehicles.Fuel.ethanol, Vehicles.Type.coach));
+
+            manager.addUser(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
+            manager.addUser(new Users("cun", "cun123", "0123456789", "baoanh@gmai.com"));
+            manager.addUser(new Users("lebao", "baole321", "0908331349", "baolelb@gamil.com"));
+            manager.addUser(new Users("xuanhai", "hai1010", "0917220886", "haixuan@gamil.com"));
+            
+            myApp.wait_system_load();
+            manager.readUserData();
     }
 }

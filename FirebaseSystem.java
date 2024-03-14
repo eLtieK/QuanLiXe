@@ -25,11 +25,13 @@ import java.util.Map;
 
 import java.lang.reflect.Type;
 
-public class ManagementSystem {
+public class FirebaseSystem {
     private DatabaseReference myRef;
     public Map<String, Users> usersManager;
+    public Map<String, Drivers> driversManager;
+    public Map<String, Vehicles> vehiclesManager;
     
-    ManagementSystem() throws IOException {
+    FirebaseSystem() throws IOException {
         init_Firebase();
         setup_Firebase_reference();
         load_user_data();
@@ -69,7 +71,7 @@ public class ManagementSystem {
     }
     public void save_user_data(Users new_user) {
         DatabaseReference usersRef = this.myRef.child("users"); //duong dan toi nut users
-        if(check_login_user(new_user.username, new_user.password)) {
+        if(check_duplicated_user(new_user.username)) {
             System.out.println("Account had been signed");
             return ;
         }
@@ -113,6 +115,18 @@ public class ManagementSystem {
                                 + ", Phone number: " + userEntry.getValue().phone_number);
         }
     }
+    private boolean check_duplicated_user(String temp_username) {
+        if(usersManager.isEmpty()) {
+            System.out.println("Check_Empty");
+            return false;
+        }
+        for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
+            if(userEntry.getValue().username.equals(temp_username)) { //so sanh 2 string giong nhau ko
+               return true;
+            }
+        }
+        return false;
+    }
     private boolean check_login_user(String temp_username, String temp_password) { //da co tai khoan ton tai chua
         if(usersManager.isEmpty()) {
             System.out.println("Check_Empty");
@@ -127,4 +141,15 @@ public class ManagementSystem {
         }
         return false;
     }
+    
+    // Add an object to Firebase, with Object class name as key and all of its variables as value.
+	public void add(Object obj) throws IllegalAccessException {
+    	String className = obj.getClass().getSimpleName();
+        DatabaseReference classRef = this.myRef.child(className); 
+		Map<String, Object> objectMap = Manager.getObjectFieldsMap(obj);
+		String new_key = classRef.push().getKey();
+		classRef.child(new_key).setValueAsync(objectMap);
+	}
 }
+
+	
