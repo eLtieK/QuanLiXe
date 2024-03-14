@@ -34,7 +34,7 @@ public class FirebaseSystem {
     FirebaseSystem() throws IOException {
         init_Firebase();
         setup_Firebase_reference();
-        load_user_data();
+        load_data();
     }    
     private void init_Firebase() throws IOException{
             FileInputStream serviceAccount = new FileInputStream("credentials.json");
@@ -49,9 +49,13 @@ public class FirebaseSystem {
     private void setup_Firebase_reference() {
         this.myRef = FirebaseDatabase.getInstance().getReference();
         this.usersManager = new HashMap<>();
+        this.driversManager = new HashMap<>();
+        this.vehiclesManager = new HashMap<>();
     }
-    private void load_user_data() { //load data tu firebase vao map usersManager
-        DatabaseReference usersRef = this.myRef.child("users");
+    private void load_data() { //load data tu firebase vao map usersManager
+        DatabaseReference usersRef = this.myRef.child("Users");
+        DatabaseReference driversRef = this.myRef.child("Vehicles");
+        DatabaseReference vehiclesRef = this.myRef.child("Drivers");
         
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
             @Override
@@ -59,7 +63,37 @@ public class FirebaseSystem {
                 String jsonString = snapshot.getValue().toString();
                 Type type = new TypeToken<Map<String, Users>>() {}.getType();
                 usersManager = new Gson().fromJson(jsonString, type);
-                System.out.println("Data loaded succesfully");
+                System.out.println("Users data loaded succesfully");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) { //xu li loi
+                System.err.println("Error while reading: " + error.getMessage());
+            }
+            
+        });
+        driversRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
+            @Override
+            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
+                String jsonString = snapshot.getValue().toString();
+                Type type = new TypeToken<Map<String, Users>>() {}.getType();
+                driversManager = new Gson().fromJson(jsonString, type);
+                System.out.println("Drivers data loaded succesfully");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) { //xu li loi
+                System.err.println("Error while reading: " + error.getMessage());
+            }
+            
+        });
+        vehiclesRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
+            @Override
+            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
+                String jsonString = snapshot.getValue().toString();
+                Type type = new TypeToken<Map<String, Users>>() {}.getType();
+                vehiclesManager = new Gson().fromJson(jsonString, type);
+                System.out.println("Vehicles data loaded succesfully");
             }
 
             @Override
@@ -70,7 +104,7 @@ public class FirebaseSystem {
         });
     }
     public void save_user_data(Users new_user) {
-        DatabaseReference usersRef = this.myRef.child("users"); //duong dan toi nut users
+        DatabaseReference usersRef = this.myRef.child("Users"); //duong dan toi nut users
         if(check_duplicated_user(new_user.username)) {
             System.out.println("Account had been signed");
             return ;
@@ -99,7 +133,7 @@ public class FirebaseSystem {
             System.out.println("No account available");  
             return ;
         }
-        DatabaseReference deleteRef = this.myRef.child("users").child(key);
+        DatabaseReference deleteRef = this.myRef.child("Users").child(key);
         deleteRef.removeValueAsync();
         usersManager.remove(key);
         System.out.println("Deleted succesfully key " + key);
@@ -149,7 +183,56 @@ public class FirebaseSystem {
 		Map<String, Object> objectMap = Manager.getObjectFieldsMap(obj);
 		String new_key = classRef.push().getKey();
 		classRef.child(new_key).setValueAsync(objectMap);
+                
+            if(className == "Users") {
+                usersManager.put(new_key, (Users)obj);
+            }
+            else if(className == "Drivers") {
+                driversManager.put(new_key, (Drivers)obj);
+            }
+            else if(className == "Vehicles") {
+                vehiclesManager.put(new_key, (Vehicles)obj);
+            }
+            else {
+                System.out.print("Data invalid");
+            }
 	}
+        private String get_key(Object obj, Map<String, ?> temp_map) {   
+            String className = obj.getClass().getSimpleName();
+            for(Map.Entry<String, ?> temp_entry : temp_map.entrySet()) { //duyet qua map
+                Object data = temp_entry.getValue();
+                if(className.equals("Users")){
+                    Users user_data = (Users)data;
+                    String check_data = (String)Manager.getFieldValue(obj, "username");
+                    if(user_data.username.equals(check_data))
+                        return temp_entry.getKey();
+                }
+                else if(className.equals("Drivers") || className.equals("Vehicles")){
+                    Drivers driver_data = (Drivers)data;
+                    int check_data = (int)Manager.getFieldValue(obj, "id");
+                    if(driver_data.id == check_data)
+                        return temp_entry.getKey();
+                }                  
+            }
+            return "";
+        }
+        private String get_object_key(Object obj) {
+            String className = obj.getClass().getSimpleName();
+            Map<String, ?> temp_map = null;
+            if("Users".equals(className)) {temp_map = usersManager;}
+            else if("Vehicles".equals(className)) {temp_map = vehiclesManager;}
+            else if("Drivers".equals(className)) {temp_map = driversManager;}
+            else {
+                System.out.println("Get key fail");
+                return "";
+            }
+            
+            return get_key(obj, temp_map);
+        }
+        public void delete(Object obj) {
+        String className = obj.getClass().getSimpleName();
+        DatabaseReference classRef = this.myRef.child(className); 
+        }
 }
 
 	

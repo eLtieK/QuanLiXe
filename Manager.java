@@ -31,17 +31,26 @@ public class Manager {
 	public void readUserData() {
 		firebase.read_user_data();
 	}
-
+        
+        // Drivers 
+        public void addDriver(Drivers driver) {
+            try {
+                    firebase.add(driver);
+            } catch (IllegalAccessException e) {
+                    System.out.println("Failed to add object!");
+                    return;
+            }
+            System.out.println("Drivers added successfully!");
+        }
 	// Vehicles
 	public void addVehicle(Vehicles vehicle) {
-		try {
-			firebase.add(vehicle);
-		} catch (IllegalAccessException e) {
-			System.out.println("Failed to add object!");
-			return;
-		}
-		System.out.println("Vehicle added successfully!");
-
+            try {
+                    firebase.add(vehicle);
+            } catch (IllegalAccessException e) {
+                    System.out.println("Failed to add object!");
+                    return;
+            }
+            System.out.println("Vehicle added successfully!");
 	}
 
 	public void removeVehicle() {
@@ -77,4 +86,15 @@ public class Manager {
 
 		return objectMap;
 	}
+        // Lay gia tri tu 1 field cu the
+        public static Object getFieldValue(Object object, String fieldName) {
+            try {
+                Field field = object.getClass().getDeclaredField(fieldName);
+                field.setAccessible(true);
+                return field.get(object);
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }    
 }

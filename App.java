@@ -42,8 +42,8 @@ public class App {
 //        myManager.read_user_data();
             Manager manager = Manager.getInstance();
             myApp.wait_system_load();
-            manager.addVehicle(new Vehicles(1, 1, Vehicles.Fuel.diesel, Vehicles.Type.truck));
-            manager.addVehicle(new Vehicles(2, 2, Vehicles.Fuel.ethanol, Vehicles.Type.coach));
+            manager.addVehicle(new Vehicles(1, 1, Vehicles.Fuel.diesel, Vehicles.Type.truck, 1));
+            manager.addVehicle(new Vehicles(2, 2, Vehicles.Fuel.ethanol, Vehicles.Type.coach, 2));
 
             manager.addUser(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
             manager.addUser(new Users("cun", "cun123", "0123456789", "baoanh@gmai.com"));

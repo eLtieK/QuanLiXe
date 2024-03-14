@@ -22,14 +22,16 @@ public class Drivers {
     private License license;
     private String experiences; //years of experiences (can be int)
     private Status status;
+    public int id;
 
-    Drivers(String name, String phone_number, String address, License license, String experiences) {
+    Drivers(String name, String phone_number, String address, License license, String experiences, int id) {
         this.name = name;
         this.phone_number = phone_number;
         this.address = address;
         this.license = license;
         this.experiences = experiences;
         this.status = Status.ready;
+        this.id = id;
     }
     
     public void changeName(String new_name) {
