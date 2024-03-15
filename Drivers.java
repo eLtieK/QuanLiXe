@@ -20,18 +20,18 @@ public class Drivers {
     private String phone_number;
     private String address;
     private License license;
-    private String experiences; //years of experiences (can be int)
+    private int experiences; //years of experiences (can be int)
     private Status status;
     public int id;
 
-    Drivers(String name, String phone_number, String address, License license, String experiences, int id) {
+    Drivers(String name, String phone_number, String address, License license, int experiences) {
         this.name = name;
         this.phone_number = phone_number;
         this.address = address;
         this.license = license;
         this.experiences = experiences;
         this.status = Status.ready;
-        this.id = id;
+        this.id = Manager.getNumOfDrivers();
     }
     
     public void changeName(String new_name) {

@@ -33,12 +33,12 @@ public class Vehicles {
     public int id;
     //private String nickname; bonus feature :)) 
 
-    Vehicles(int weight, int size, Fuel fuel, Type type, int id) {
+    Vehicles(int weight, int size, Fuel fuel, Type type) {
         this.weight = weight;
         this.size = size;
         this.fuel = fuel;
         this.type = type;
         this.status = Status.ready;
-        this.id = id;
+        this.id = Manager.getNumOfVehicles();
     }
 }

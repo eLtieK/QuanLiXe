@@ -42,13 +42,16 @@ public class App {
 //        myManager.read_user_data();
             Manager manager = Manager.getInstance();
             myApp.wait_system_load();
-            manager.addVehicle(new Vehicles(1, 1, Vehicles.Fuel.diesel, Vehicles.Type.truck, 1));
-            manager.addVehicle(new Vehicles(2, 2, Vehicles.Fuel.ethanol, Vehicles.Type.coach, 2));
+            manager.addVehicle(new Vehicles(1, 1, Vehicles.Fuel.diesel, Vehicles.Type.truck));
+            manager.addVehicle(new Vehicles(2, 2, Vehicles.Fuel.ethanol, Vehicles.Type.coach));
 
             manager.addUser(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
             manager.addUser(new Users("cun", "cun123", "0123456789", "baoanh@gmai.com"));
             manager.addUser(new Users("lebao", "baole321", "0908331349", "baolelb@gamil.com"));
             manager.addUser(new Users("xuanhai", "hai1010", "0917220886", "haixuan@gamil.com"));
+            
+            manager.addDriver(new Drivers("huy", "0123456789", "kontum", Drivers.License.E, 10));
+            manager.removeUser(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
             
             myApp.wait_system_load();
             manager.readUserData();

@@ -54,8 +54,8 @@ public class FirebaseSystem {
     }
     private void load_data() { //load data tu firebase vao map usersManager
         DatabaseReference usersRef = this.myRef.child("Users");
-        DatabaseReference driversRef = this.myRef.child("Vehicles");
-        DatabaseReference vehiclesRef = this.myRef.child("Drivers");
+        DatabaseReference vehiclesRef = this.myRef.child("Vehicles");
+        DatabaseReference driversRef = this.myRef.child("Drivers");
         
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
             @Override
@@ -105,7 +105,7 @@ public class FirebaseSystem {
     }
     public void save_user_data(Users new_user) {
         DatabaseReference usersRef = this.myRef.child("Users"); //duong dan toi nut users
-        if(check_duplicated_user(new_user.username)) {
+        if(check_duplicated_user(new_user)) {
             System.out.println("Account had been signed");
             return ;
         }
@@ -114,21 +114,8 @@ public class FirebaseSystem {
         usersRef.child(new_key).setValueAsync(new_user);
         usersManager.put(new_key, new_user);
     }
-    private String get_user_key(String temp_username, String temp_password) {
-        if(usersManager.isEmpty()) {
-            System.out.println("Check_Empty");  
-        }
-        for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
-            if(userEntry.getValue().username.equals(temp_username)) { //so sanh 2 string giong nhau ko
-                if(userEntry.getValue().password.equals(temp_password)) {
-                    return userEntry.getKey();
-                }
-            }
-        }
-        return "";
-    }
-    public void delete_user_data(String temp_username, String temp_password) {
-        String key = get_user_key(temp_username, temp_password);
+    public void delete_user_data(Users del_user) {
+        String key = get_object_key(del_user);
         if(key.equals("")) {
             System.out.println("No account available");  
             return ;
@@ -149,90 +136,104 @@ public class FirebaseSystem {
                                 + ", Phone number: " + userEntry.getValue().phone_number);
         }
     }
-    private boolean check_duplicated_user(String temp_username) {
+    public boolean check_duplicated_user(Users user) {
         if(usersManager.isEmpty()) {
             System.out.println("Check_Empty");
             return false;
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
-            if(userEntry.getValue().username.equals(temp_username)) { //so sanh 2 string giong nhau ko
+            if(userEntry.getValue().username.equals(user.username)) { //so sanh 2 string giong nhau ko
                return true;
             }
         }
         return false;
     }
-    private boolean check_login_user(String temp_username, String temp_password) { //da co tai khoan ton tai chua
+    private boolean check_login_user(Users user) { //check dang nhap
         if(usersManager.isEmpty()) {
             System.out.println("Check_Empty");
             return false;
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
-            if(userEntry.getValue().username.equals(temp_username)) { //so sanh 2 string giong nhau ko
-                if(userEntry.getValue().password.equals(temp_password)) {
+            if(userEntry.getValue().username.equals(user.username)) { //so sanh 2 string giong nhau ko
+                if(userEntry.getValue().password.equals(user.password)) {
+                    System.out.println("Login successfully");
                     return true;
                 }
             }
         }
+        System.out.println("Wrong password or username");
         return false;
     }
-    
     // Add an object to Firebase, with Object class name as key and all of its variables as value.
-	public void add(Object obj) throws IllegalAccessException {
-    	String className = obj.getClass().getSimpleName();
-        DatabaseReference classRef = this.myRef.child(className); 
-		Map<String, Object> objectMap = Manager.getObjectFieldsMap(obj);
-		String new_key = classRef.push().getKey();
-		classRef.child(new_key).setValueAsync(objectMap);
-                
-            if(className == "Users") {
-                usersManager.put(new_key, (Users)obj);
+    public void add(Object obj) throws IllegalAccessException {
+    String className = obj.getClass().getSimpleName();
+    DatabaseReference classRef = this.myRef.child(className); 
+            Map<String, Object> objectMap = Manager.getObjectFieldsMap(obj);
+            String new_key = classRef.push().getKey();
+            classRef.child(new_key).setValueAsync(objectMap);
+
+        if(className == "Users") {
+            usersManager.put(new_key, (Users)obj);
+        }
+        else if(className == "Drivers") {
+            driversManager.put(new_key, (Drivers)obj);
+        }
+        else if(className == "Vehicles") {
+            vehiclesManager.put(new_key, (Vehicles)obj);
+        }
+        else {
+            System.out.print("Data invalid");
+        }
+    }
+    private String get_key(Object obj, Map<String, ?> temp_map) {   
+        String className = obj.getClass().getSimpleName();
+        for(Map.Entry<String, ?> temp_entry : temp_map.entrySet()) { //duyet qua map
+            Object data = temp_entry.getValue();
+            if(className.equals("Users")){
+                Users user_data = (Users)data;
+                String check_data = (String)Manager.getFieldValue(obj, "username");
+                if(user_data.username.equals(check_data))
+                    return temp_entry.getKey();
             }
-            else if(className == "Drivers") {
-                driversManager.put(new_key, (Drivers)obj);
-            }
-            else if(className == "Vehicles") {
-                vehiclesManager.put(new_key, (Vehicles)obj);
-            }
-            else {
-                System.out.print("Data invalid");
-            }
-	}
-        private String get_key(Object obj, Map<String, ?> temp_map) {   
-            String className = obj.getClass().getSimpleName();
-            for(Map.Entry<String, ?> temp_entry : temp_map.entrySet()) { //duyet qua map
-                Object data = temp_entry.getValue();
-                if(className.equals("Users")){
-                    Users user_data = (Users)data;
-                    String check_data = (String)Manager.getFieldValue(obj, "username");
-                    if(user_data.username.equals(check_data))
-                        return temp_entry.getKey();
-                }
-                else if(className.equals("Drivers") || className.equals("Vehicles")){
-                    Drivers driver_data = (Drivers)data;
-                    int check_data = (int)Manager.getFieldValue(obj, "id");
-                    if(driver_data.id == check_data)
-                        return temp_entry.getKey();
-                }                  
-            }
+            else if(className.equals("Drivers") || className.equals("Vehicles")){
+                Drivers driver_data = (Drivers)data;
+                int check_data = (int)Manager.getFieldValue(obj, "id");
+                if(driver_data.id == check_data)
+                    return temp_entry.getKey();
+            }                  
+        }
+        return "";
+    }
+    private String get_object_key(Object obj) {
+        String className = obj.getClass().getSimpleName();
+        Map<String, ?> temp_map = null;
+        if("Users".equals(className)) {temp_map = usersManager;}
+        else if("Vehicles".equals(className)) {temp_map = vehiclesManager;}
+        else if("Drivers".equals(className)) {temp_map = driversManager;}
+        else {
+            System.out.println("Get key fail");
             return "";
         }
-        private String get_object_key(Object obj) {
-            String className = obj.getClass().getSimpleName();
-            Map<String, ?> temp_map = null;
-            if("Users".equals(className)) {temp_map = usersManager;}
-            else if("Vehicles".equals(className)) {temp_map = vehiclesManager;}
-            else if("Drivers".equals(className)) {temp_map = driversManager;}
-            else {
-                System.out.println("Get key fail");
-                return "";
-            }
-            
-            return get_key(obj, temp_map);
-        }
-        public void delete(Object obj) {
+
+        return get_key(obj, temp_map);
+    }
+    public void delete(Object obj) {
         String className = obj.getClass().getSimpleName();
-        DatabaseReference classRef = this.myRef.child(className); 
+        Map<String, ?> temp_map = null;
+        if("Users".equals(className)) {temp_map = usersManager;}
+        else if("Vehicles".equals(className)) {temp_map = vehiclesManager;}
+        else if("Drivers".equals(className)) {temp_map = driversManager;}
+        else {
+            System.out.println("Delete fail");
+            return ;
         }
+        
+        String key = get_object_key(obj);
+        DatabaseReference classRef = this.myRef.child(className).child(key);
+        classRef.removeValueAsync();
+        temp_map.remove(key);
+        System.out.println("Deleted succesfully key " + className + " " + key);
+    }
 }
 
 	
