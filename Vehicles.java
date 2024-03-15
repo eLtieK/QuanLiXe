@@ -30,15 +30,34 @@ public class Vehicles {
     private Fuel fuel;
     private Type type;
     private Status status;
-    public int id;
+    private int id;
     //private String nickname; bonus feature :)) 
 
-    Vehicles(int weight, int size, Fuel fuel, Type type) {
+    Vehicles(int weight, int size, Fuel fuel, Type type, int id) {
         this.weight = weight;
         this.size = size;
         this.fuel = fuel;
         this.type = type;
         this.status = Status.ready;
-        this.id = Manager.getNumOfVehicles();
+        this.id = id;
+    }
+    
+    public int getWeight() {
+        return this.weight;
+    }
+    public int getSize() {
+        return this.size;
+    }
+    public Vehicles.Fuel getFuel() {
+        return this.fuel;
+    }
+    public Vehicles.Type getType() {
+        return this.type;
+    }
+    public Vehicles.Status getStatus() {
+        return this.status;
+    }    
+    public int getId() {
+        return this.id;
     }
 }
