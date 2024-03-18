@@ -8,10 +8,10 @@
  * @author Admin
  */
 public class Users {
-    public String username;
-    public String password;
-    public String phone_number;
-    public String email;
+    private String username;
+    private String password;
+    private String phone_number;
+    private String email;
     
     public Users(String username, String password, String phone_number, String email) {
         this.username = username;
@@ -19,4 +19,17 @@ public class Users {
         this.phone_number = phone_number;
         this.email = email;
     }
+    
+    public String getName() {
+        return this.username;
+    }
+    public String getPassword() {
+        return this.password;
+    }
+    public String getPhonenumber() {
+        return this.phone_number;
+    }
+    public String getEmail() {
+        return this.email;
+    }    
 }
