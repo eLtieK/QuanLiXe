@@ -5,10 +5,23 @@ import java.lang.reflect.Field;
 
 // Using Singleton pattern
 public class Manager {
-    private FirebaseSystem firebase;
-    Manager() throws IOException {
-        firebase = new FirebaseSystem();
-    }
+    private static Manager instance;
+	private FirebaseSystem firebase;
+
+	private Manager() throws IOException {
+		firebase = new FirebaseSystem();
+	}
+
+	public static Manager getInstance() throws IOException {
+		if (instance == null) {
+			synchronized (Manager.class) {
+				if (instance == null) {
+					instance = new Manager();
+				}
+			}
+		}
+		return instance;
+	}
     // Users
     public void addUser(Users user) {
         try {
