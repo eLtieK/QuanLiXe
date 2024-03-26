@@ -5,12 +5,20 @@ import java.lang.reflect.Field;
 
 // Using Singleton pattern
 public class Manager {
-    private FirebaseSystem firebase;
-    Manager() throws IOException {
-        firebase = new FirebaseSystem();
+    private static Manager instance;
+    private static FirebaseSystem firebase;
+    
+    private Manager(){}
+    
+    public static Manager getInstance() throws IOException { 
+        if(instance == null ) {
+            instance = new Manager();
+            firebase = new FirebaseSystem();
+        }
+        return instance;
     }
     // Users
-    public void addUser(Users user) {
+    public static void addUser(Users user) {
         try {
             if(firebase.check_duplicated_user(user)) {
                 System.out.println("Account had been signed");
@@ -23,21 +31,21 @@ public class Manager {
         }
         System.out.println("New account have been signed succesfully");
     }
-    public void removeUser(Users user) {
+    public static void removeUser(Users user) {
         firebase.delete(user);
     }
-    public void readUser(Users user) {
+    public static void readUser(Users user) {
         firebase.read(user);
     }      
-    public void readAllUsers() {
+    public static void readAllUsers() {
         firebase.read_map(firebase.usersManager);
     }
-    public int getNumOfUsers() {
+    public static int getNumOfUsers() {
         return firebase.usersManager.size();
     }
 
     // Drivers 
-    public void addDriver(Drivers driver) {
+    public static void addDriver(Drivers driver) {
         try {
             firebase.add(driver);
         } catch (IllegalAccessException e) {
@@ -46,21 +54,21 @@ public class Manager {
         }
         System.out.println("Drivers added successfully!");
     }
-    public int getNumOfDrivers() {
+    public static int getNumOfDrivers() {
         return firebase.driversManager.size();
     }
-    public void removeDriver(Drivers driver) {
+    public static void removeDriver(Drivers driver) {
         firebase.delete(driver);
     }
-    public void readDriver(Drivers driver) {
+    public static void readDriver(Drivers driver) {
         firebase.read(driver);
     }      
-    public void readAllDrivers() {
+    public static void readAllDrivers() {
         firebase.read_map(firebase.driversManager);
     }
 
     // Vehicles
-    public void addVehicle(Vehicles vehicle) {
+    public static void addVehicle(Vehicles vehicle) {
         try {
                 firebase.add(vehicle);
         } catch (IllegalAccessException e) {
@@ -69,28 +77,28 @@ public class Manager {
         }
         System.out.println("Vehicle added successfully!");
     }
-    public int getNumOfVehicles() {
+    public static int getNumOfVehicles() {
         return firebase.vehiclesManager.size();
     }
-    public void removeVehicle(Vehicles vehicle) {
+    public static void removeVehicle(Vehicles vehicle) {
         firebase.delete(vehicle);
     }
-    public void readVehicle(Vehicles vehicle) {
+    public static void readVehicle(Vehicles vehicle) {
         firebase.read(vehicle);
     }      
-    public void readAllVehicles() {
+    public static void readAllVehicles() {
         firebase.read_map(firebase.vehiclesManager);
     }
-    public void editVehicle() {
+    public static void editVehicle() {
 
     }
 
     // Trip
-    public void makePlan() {
+    public static void makePlan() {
             // Planning and optimizing routes
     }
 
-    public void calculateCosts() {
+    public static void calculateCosts() {
             // Calculate expected costs
     }
 

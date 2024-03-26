@@ -9,7 +9,7 @@
  */
 public class Drivers {
     enum License{
-        B1,B2,C,D,E,F
+        B2,C,D,E
     }
     enum Status{ //add some status for drivers
         ready,
@@ -56,7 +56,29 @@ public class Drivers {
         return this.id;
     }
     
-     public void changeName(String new_name) {
+    public void changeName(String new_name) {
         this.name = new_name;
+    }
+    
+    public int getAverageSpeed() { //lay toc do trung binh lai xe cua tai xe co the dat dc dua theo so nam kinh nghie,
+        if(this.experiences <= 0) {
+            return 40;
+        } else if(this.experiences <= 4) {
+            return 50;
+        } else if(this.experiences <= 10){
+            return 60;
+        } else {
+            return 50;
+        }
+    }
+     
+    public int getProfit() { //lay tien luong chay xe 1h theo bang lai xe
+        if(this.license == Drivers.License.B2) {
+            return 10;
+        } else if(this.license == Drivers.License.C || this.license == Drivers.License.D) {
+            return 30;
+        } else {
+            return 40;
+        }
     }
 }

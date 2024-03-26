@@ -26,7 +26,7 @@ public class App {
     }
     public static void main(String[] args) throws IOException, InterruptedException{
         App myApp = new App();
-        final Manager manager = new Manager();
+        final Manager manager = Manager.getInstance();
         
         myApp.wait_system_load();
         
