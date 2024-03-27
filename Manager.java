@@ -17,6 +17,9 @@ public class Manager {
         }
         return instance;
     }
+    public static FirebaseSystem getFirebase() {
+        return firebase;
+    }
     // Users
     public static void addUser(Users user) {
         try {

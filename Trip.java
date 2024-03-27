@@ -1,12 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+import java.util.Map;
 
-/**
- *
- * @author Admin
- */
 public class Trip {
    enum Status {
         on_trip,
@@ -23,12 +16,12 @@ public class Trip {
     private String time_start;
     private Destination destination_end;
     private Destination destination_start;
-    private String expected_time; //du kien thoi gian den
+    private double expected_time; //du kien thoi gian den
     private Status status;
     private Vehicles vehicle;
     private Drivers driver;
     
-    Trip(String time_start, Trip.Destination start, Trip.Destination end) {
+    Trip(String time_start, Trip.Destination start, Trip.Destination end) throws Exception {
         this.time_start = time_start;
         this.destination_start = start;
         this.destination_end = end;
@@ -44,8 +37,8 @@ public class Trip {
         this.driver = driver;
     }
     
-    String caculate_expected_time(){
-        return "00:00";
+    private double caculate_expected_time() throws Exception{
+        return Trip.getDistance(this.destination_start ,this.destination_end) / this.driver.getAverageSpeed();
     } 
     
     public static int getDistance(Trip.Destination start, Trip.Destination end) throws Exception{
@@ -130,5 +123,11 @@ public class Trip {
                 }
         }
         throw new Exception("Error: Unable to get distance");
+    }
+    
+    public static Pair<Drivers, Vehicles> optimization_trip(Vehicles.Type type) {
+        Map<String, Drivers> map_drivers = Manager.getFirebase().driversManager;
+        Map<String, Vehicles> map_vehicles = Manager.getFirebase().vehiclesManager;
+        
     }
 }
