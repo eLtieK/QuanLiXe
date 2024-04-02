@@ -125,9 +125,27 @@ public class Trip {
         throw new Exception("Error: Unable to get distance");
     }
     
-    public static Pair<Drivers, Vehicles> optimization_trip(Vehicles.Type type) {
-        Map<String, Drivers> map_drivers = Manager.getFirebase().driversManager;
-        Map<String, Vehicles> map_vehicles = Manager.getFirebase().vehiclesManager;
-        
+    public static Vehicles optimization_vehicle(Vehicle.Type type) {
+        Vehicles best_vehicle = Manager.getBestVehicle(type);
+        if(best_vehicle.getKm_before_maintenace() != Double.POSITIVE_INFINITY) {
+            return best_vehicle;
+        }
+        throw new IllegalArgumentException("No vehicle to choose");
+    }
+    
+    //help method 
+    public static boolean check_suitable(Drivers.License li, Vehicles.Type type) {
+        if(li.equals(Drivers.License.B2) && type.equals(Vehicles.Type.car)) {
+            return true;
+        } else if (li.equals(Drivers.License.C) && 
+                   (type.equals(Vehicles.Type.car) || type.equals(Vehicles.Type.coach)) ) {
+            return true;
+        } else if (li.equals(Drivers.License.D) && !type.equals(Vehicles.Type.car)) {
+            return true;
+        } else if (li.equals(Drivers.License.E)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

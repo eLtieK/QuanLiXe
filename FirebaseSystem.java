@@ -259,6 +259,45 @@ public class FirebaseSystem {
             }
         }
     }
+    
+    public Object get_best_object(Vehicles.Type type, Map<String, ?> map) { 
+        String className = map.values().iterator().next().getClass().getSimpleName();
+        Vehicles vehicle_temp = new Vehicles();
+        Drivers driver_temp = new Drivers();
+        boolean is_best_license = false;
+        
+        for(Map.Entry<String, ?> entry : map.entrySet()) {
+            if(className.equals("Vehicles")) {
+                Vehicles data = (Vehicles)entry.getValue();
+                if(data.getType().equals(type)) {
+                    if(data.getKm_before_maintenace() < vehicle_temp.getKm_before_maintenace()) {
+                        vehicle_temp = data;
+                    }
+                }
+            }
+            else if(className.equals("Drivers")) {
+                Drivers data = (Drivers)entry.getValue();
+                if(data.get_suitable_type().equals(type)) {
+                    if(data.getExperiences() >= driver_temp.getExperiences()) {
+                        driver_temp = data;
+                        is_best_license = true;
+                    }
+                }
+                else if(Trip.check_suitable(data.getLicense(), type) && !is_best_license) {
+                    if(data.getExperiences() >= driver_temp.getExperiences()) {
+                        driver_temp = data;
+                    }
+                }
+            }
+        }
+        
+        if(className.equals("Vehicles")) {
+            return vehicle_temp;
+        }
+        else {
+            return driver_temp;
+        }
+    }
 }
 
 	

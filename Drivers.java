@@ -24,6 +24,10 @@ public class Drivers {
     private Status status;
     private int id;
 
+    Drivers() {
+        this.experiences = 0; 
+    }
+    
     Drivers(String name, String phone_number, String address, License license, int experiences, int id) {
         this.name = name;
         this.phone_number = phone_number;
@@ -68,17 +72,32 @@ public class Drivers {
         } else if(this.experiences <= 10){
             return 60;
         } else {
-            return 50;
+            return 70;
         }
     }
      
     public int getProfit() { //lay tien luong chay xe 1h theo bang lai xe
-        if(this.license == Drivers.License.B2) {
+        if(this.license.equals(Drivers.License.B2)) {
             return 10;
-        } else if(this.license == Drivers.License.C || this.license == Drivers.License.D) {
+        } else if(this.license.equals(Drivers.License.C) || this.license.equals(Drivers.License.D) ) {
             return 30;
         } else {
             return 40;
+        }
+    }
+    
+    public Vehicles.Type get_suitable_type() {
+        if(this.license.equals(Drivers.License.B2)) {
+            return Vehicles.Type.car;
+        }
+        else if(this.license.equals(Drivers.License.C)) {
+            return Vehicles.Type.coach;
+        }
+        else if(this.license.equals(Drivers.License.D)) {
+            return Vehicles.Type.truck;
+        }
+        else {
+            return Vehicles.Type.container;
         }
     }
 }

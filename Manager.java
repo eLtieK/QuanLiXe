@@ -69,6 +69,13 @@ public class Manager {
     public static void readAllDrivers() {
         firebase.read_map(firebase.driversManager);
     }
+    public static Drivers gerBestDriver(Vehicles.Type type) {
+       Drivers best_driver = (Drivers)firebase.get_best_object(type, firebase.driversManager);
+       if(best_driver.getExperiences() != 0) {
+           return best_driver;
+       }
+       throw new IllegalArgumentException("No suitbale driver to choose");
+    }
 
     // Vehicles
     public static void addVehicle(Vehicles vehicle) {
@@ -91,6 +98,13 @@ public class Manager {
     }      
     public static void readAllVehicles() {
         firebase.read_map(firebase.vehiclesManager);
+    }
+    public static Vehicles getBestVehicle(Vehicles.Type type) {
+       Vehicles best_vehicle = (Vehicles)firebase.get_best_object(type, firebase.vehiclesManager);
+       if(best_vehicle.getKm_before_maintenace() != Double.POSITIVE_INFINITY) {
+           return best_vehicle;
+       }
+       throw new IllegalArgumentException("No suitbale vehicle to choose");
     }
     public static void editVehicle() {
 

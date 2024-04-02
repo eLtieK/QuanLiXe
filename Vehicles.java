@@ -31,8 +31,13 @@ public class Vehicles {
     private Type type;
     private Status status;
     private int id;
+    private double all_km;
+    private double km_before_maintenace;
     //private String nickname; bonus feature :)) 
 
+    Vehicles() {
+        this.km_before_maintenace = Double.POSITIVE_INFINITY;
+    }
     Vehicles(int weight, int size, Fuel fuel, Type type, int id) {
         this.weight = weight;
         this.size = size;
@@ -40,6 +45,8 @@ public class Vehicles {
         this.type = type;
         this.status = Status.ready;
         this.id = id;
+        this.all_km = 0;
+        this.km_before_maintenace = 0;
     }
     
     public int getWeight() {
@@ -59,5 +66,38 @@ public class Vehicles {
     }    
     public int getId() {
         return this.id;
+    }
+    public double getAll_km() {
+        return this.all_km;
+    }
+    public double getKm_before_maintenace() {
+        return this.km_before_maintenace;
+    }
+    
+    public Drivers.License getSuitableLicense () {
+        if(this.type.equals(Vehicles.Type.car)) {
+            return Drivers.License.B2;
+        }
+        else if(this.type.equals(Vehicles.Type.coach)) {
+            return Drivers.License.C;
+        }
+        else if(this.type.equals(Vehicles.Type.truck)) {
+            return Drivers.License.D;
+        }
+        else {
+            return Drivers.License.E;
+        }
+    }
+    
+    public boolean is_need_maintenace () {
+        if(this.km_before_maintenace >= 10000) {
+            return true;
+        }
+        return false;
+    }
+    
+    public void reset_after_maintenace() {
+        this.km_before_maintenace = 0;
+        this.status = Vehicles.Status.under_maintenance;
     }
 }
