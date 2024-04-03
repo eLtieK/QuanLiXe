@@ -120,12 +120,36 @@ public class Manager {
     }
 
     // Trip
+    public static void addTrip(Trip trip) {
+        try {
+                firebase.add(trip);
+        } catch (IllegalAccessException e) {
+                System.out.println("Failed to add object!");
+                return;
+        }
+        System.out.println("Trip added successfully!");
+    }
+    public static void removeTrip(Trip trip) {
+        firebase.delete(trip);
+    }
+    public static void removeAllTrip() {
+        firebase.delete_map(firebase.tripManager);
+    }
+    public static void readTrip(Trip trip) {
+        firebase.read(trip);
+    }
+    public static void readAllTrip() {
+        firebase.read_map(firebase.tripManager);
+    }
     public static void makePlan() {
             // Planning and optimizing routes
     }
 
     public static void calculateCosts() {
             // Calculate expected costs
+    }
+    public static int getNumOfTrips() {
+        return firebase.tripManager.size();
     }
 
     // Helper method

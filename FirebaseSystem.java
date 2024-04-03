@@ -32,6 +32,7 @@ public class FirebaseSystem {
     public Map<String, Users> usersManager;
     public Map<String, Drivers> driversManager;
     public Map<String, Vehicles> vehiclesManager;
+    public Map<String, Trip> tripManager;
     
     FirebaseSystem() throws IOException {
         init_Firebase();
@@ -53,11 +54,13 @@ public class FirebaseSystem {
         this.usersManager = new HashMap<>();
         this.driversManager = new HashMap<>();
         this.vehiclesManager = new HashMap<>();
+        this.tripManager = new HashMap<>();
     }
     private void load_data() { //load data tu firebase vao map usersManager
         DatabaseReference usersRef = this.myRef.child("Users");
         DatabaseReference vehiclesRef = this.myRef.child("Vehicles");
         DatabaseReference driversRef = this.myRef.child("Drivers");
+        DatabaseReference tripRef = this.myRef.child("Trip");
         
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
             @Override
@@ -104,20 +107,24 @@ public class FirebaseSystem {
             }
             
         });
+        tripRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
+            @Override
+            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
+                String jsonString = snapshot.getValue().toString();
+                Type type = new TypeToken<Map<String, Trip>>() {}.getType();
+                tripManager = new Gson().fromJson(jsonString, type);
+                System.out.println("Trip loaded succesfully");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) { //xu li loi
+                System.err.println("Error while reading: " + error.getMessage());
+            }
+            
+        });
     }
     public DatabaseReference getRef() {
         return this.myRef;
-    }
-    public void read_user_data() {
-        if(usersManager.isEmpty()) {
-            System.out.println("Read_Empty");
-        }
-        for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) {
-//          System.out.print("Key: " + userEntry.getKey() + " ");
-            System.out.println("Name: " + userEntry.getValue().getName()
-                                + ", Email: " + userEntry.getValue().getEmail()
-                                + ", Phone number: " + userEntry.getValue().getPhonenumber());
-        }
     }
     public boolean check_duplicated_user(Users user) {
         if(usersManager.isEmpty()) {
@@ -165,6 +172,9 @@ public class FirebaseSystem {
         else if(className.equals("Vehicles")) {
             vehiclesManager.put(new_key, (Vehicles)obj);
         }
+        else if(className.equals("Trip")) {
+            tripManager.put(new_key, (Trip)obj);
+        }
         else {
             System.out.print("Data invalid");
         }
@@ -192,6 +202,12 @@ public class FirebaseSystem {
                 if(vehicle_data.getId() == check_data)
                     return temp_entry.getKey();
             }
+            else if(className.equals("Trip")) {
+                Trip trip_data = (Trip)data;
+                int check_data = (int)Manager.getFieldValue(obj, "id");
+                if(trip_data.getId() == check_data)
+                    return temp_entry.getKey();
+            }
         }
         return "";
     }
@@ -201,6 +217,7 @@ public class FirebaseSystem {
         if("Users".equals(className)) {temp_map = usersManager;}
         else if("Vehicles".equals(className)) {temp_map = vehiclesManager;}
         else if("Drivers".equals(className)) {temp_map = driversManager;}
+        else if("Trip".equals(className)) {temp_map = tripManager;}
         else {
             System.out.println("Deleted fail");
             return ;
@@ -211,7 +228,7 @@ public class FirebaseSystem {
         temp_map.remove(key);
         System.out.println("Deleted succesfully key " + className + " " + key);
     }
-    public void delete_map(Map<String, ?> map) {  
+    public void delete_map(Map<String, ?> map) {  //phai tao 1 list de chua data vi neu xoa data trong map luc dang duyet se bi xung dot du lieu
         String className = map.values().iterator().next().getClass().getSimpleName();
         List<Object> objsToRemove = new ArrayList<>();
         for(Map.Entry<String, ?> entry : map.entrySet()) {
@@ -225,6 +242,10 @@ public class FirebaseSystem {
             }
             else if(className.equals("Drivers")) {
                 Drivers data = (Drivers)entry.getValue();
+                objsToRemove.add(data);
+            }
+            else if(className.equals("Trip")) {
+                Trip data = (Trip)entry.getValue();
                 objsToRemove.add(data);
             }
         }
@@ -264,6 +285,19 @@ public class FirebaseSystem {
                                 + ", Status: " + data.getStatus().toString()
             );
         }
+        else if(className.equals("Trip")) {
+            Trip data = (Trip)obj;
+            System.out.println("Id: " + data.getId()
+                                + ", Start: " + data.getDestination_start().toString()
+                                + ", End: " + data.getDestination_end().toString()
+                                + ", Start time: " + data.getTime()
+                                + ", Expected time: " + data.getExpected_time()
+                                + ", Status: " + data.getStatus().toString()
+                                + ", Driver's name: " + data.getDriver().getName()
+                                + ", Driver's phone number: " + data.getDriver().getPhonenumber()
+                                + ", Type of vehicle: " + data.getVehicle().getType().toString()
+            );
+        }
         else {
             System.out.println("Invalid data to read");
         }
@@ -281,6 +315,10 @@ public class FirebaseSystem {
             }
             else if(className.equals("Drivers")) {
                 Drivers data = (Drivers)entry.getValue();
+                read(data);
+            }
+            else if(className.equals("Trip")) {
+                Trip data = (Trip)entry.getValue();
                 read(data);
             }
         }
