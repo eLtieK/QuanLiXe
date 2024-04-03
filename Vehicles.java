@@ -31,12 +31,12 @@ public class Vehicles {
     private Type type;
     private Status status;
     private int id;
-    private double all_km;
-    private double km_before_maintenace;
+    private long all_km;
+    private long km_before_maintenace;
     //private String nickname; bonus feature :)) 
 
     Vehicles() {
-        this.km_before_maintenace = Double.POSITIVE_INFINITY;
+        this.km_before_maintenace = Long.MAX_VALUE;
     }
     Vehicles(int weight, int size, Fuel fuel, Type type, int id) {
         this.weight = weight;
@@ -74,7 +74,7 @@ public class Vehicles {
         return this.km_before_maintenace;
     }
     
-    public Drivers.License getSuitableLicense () {
+    public Drivers.License get_suitable_license () {
         if(this.type.equals(Vehicles.Type.car)) {
             return Drivers.License.B2;
         }

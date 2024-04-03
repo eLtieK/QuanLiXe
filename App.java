@@ -44,14 +44,18 @@ public class App {
         manager.addDriver(driver_1);
         manager.addDriver(driver_2);
 
-        manager.removeUser(new Users("kiet", "kentom", "0946800349", "kennezversion@gmail.com"));
-        manager.removeDriver(driver_2);
-        manager.removeVehicle(vehicle_2);
-
+        manager.readDriver(manager.getBestDriver(vehicle_1.getType()));
+        manager.readVehicle(manager.getBestVehicle(vehicle_1.getType()));
         myApp.wait_system_load();
         
         manager.readAllUsers();
         manager.readAllDrivers();
         manager.readAllVehicles();
+        
+        manager.removeAllUsers();
+        manager.removeAllDrivers();
+        manager.removeAllVehicles();
+        
+        myApp.wait_system_load();
     }
 }

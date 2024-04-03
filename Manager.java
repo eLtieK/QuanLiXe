@@ -37,6 +37,9 @@ public class Manager {
     public static void removeUser(Users user) {
         firebase.delete(user);
     }
+    public static void removeAllUsers() {
+        firebase.delete_map(firebase.usersManager);
+    }
     public static void readUser(Users user) {
         firebase.read(user);
     }      
@@ -63,13 +66,16 @@ public class Manager {
     public static void removeDriver(Drivers driver) {
         firebase.delete(driver);
     }
+    public static void removeAllDrivers() {
+        firebase.delete_map(firebase.driversManager);
+    }
     public static void readDriver(Drivers driver) {
         firebase.read(driver);
     }      
     public static void readAllDrivers() {
         firebase.read_map(firebase.driversManager);
     }
-    public static Drivers gerBestDriver(Vehicles.Type type) {
+    public static Drivers getBestDriver(Vehicles.Type type) {
        Drivers best_driver = (Drivers)firebase.get_best_object(type, firebase.driversManager);
        if(best_driver.getExperiences() != 0) {
            return best_driver;
@@ -93,6 +99,9 @@ public class Manager {
     public static void removeVehicle(Vehicles vehicle) {
         firebase.delete(vehicle);
     }
+    public static void removeAllVehicles() {
+        firebase.delete_map(firebase.vehiclesManager);
+    }
     public static void readVehicle(Vehicles vehicle) {
         firebase.read(vehicle);
     }      
@@ -101,7 +110,7 @@ public class Manager {
     }
     public static Vehicles getBestVehicle(Vehicles.Type type) {
        Vehicles best_vehicle = (Vehicles)firebase.get_best_object(type, firebase.vehiclesManager);
-       if(best_vehicle.getKm_before_maintenace() != Double.POSITIVE_INFINITY) {
+       if(best_vehicle.getKm_before_maintenace() < Long.MAX_VALUE) {
            return best_vehicle;
        }
        throw new IllegalArgumentException("No suitbale vehicle to choose");

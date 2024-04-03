@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FirebaseSystem {
     private DatabaseReference myRef;
@@ -154,13 +156,13 @@ public class FirebaseSystem {
             String new_key = classRef.push().getKey();
             classRef.child(new_key).setValueAsync(objectMap);
 
-        if(className == "Users") {
+        if(className.equals("Users")) {
             usersManager.put(new_key, (Users)obj);
         }
-        else if(className == "Drivers") {
+        else if(className.equals("Drivers")) {
             driversManager.put(new_key, (Drivers)obj);
         }
-        else if(className == "Vehicles") {
+        else if(className.equals("Vehicles")) {
             vehiclesManager.put(new_key, (Vehicles)obj);
         }
         else {
@@ -209,6 +211,28 @@ public class FirebaseSystem {
         temp_map.remove(key);
         System.out.println("Deleted succesfully key " + className + " " + key);
     }
+    public void delete_map(Map<String, ?> map) {  
+        String className = map.values().iterator().next().getClass().getSimpleName();
+        List<Object> objsToRemove = new ArrayList<>();
+        for(Map.Entry<String, ?> entry : map.entrySet()) {
+            if(className.equals("Users")) {
+                Users data = (Users)entry.getValue();
+                objsToRemove.add(data);
+            }
+            else if(className.equals("Vehicles")) {
+                Vehicles data = (Vehicles)entry.getValue();
+                objsToRemove.add(data);
+            }
+            else if(className.equals("Drivers")) {
+                Drivers data = (Drivers)entry.getValue();
+                objsToRemove.add(data);
+            }
+        }
+        
+        for(Object obj : objsToRemove) {
+            delete(obj);
+        }
+    }
     public void read(Object obj) {
         String className = obj.getClass().getSimpleName();
         if(className.equals("Users")) {
@@ -220,11 +244,13 @@ public class FirebaseSystem {
         else if(className.equals("Vehicles")) {
             Vehicles data = (Vehicles)obj;
             System.out.println("Id: " + data.getId()
-                                + ", Tyoe: " + data.getType().toString()
+                                + ", Type: " + data.getType().toString()
                                 + ", Weight: " + data.getWeight()
                                 + ", Size: " + data.getWeight()
                                 + ", Fuel: " + data.getFuel().toString()
                                 + ", Status: " + data.getStatus().toString()
+                                + ", All_km: " + data.getAll_km()
+                                + ", Km_before_maintenace: " + data.getKm_before_maintenace()
             );
         }
         else if(className.equals("Drivers")) {

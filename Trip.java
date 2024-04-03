@@ -125,14 +125,6 @@ public class Trip {
         throw new Exception("Error: Unable to get distance");
     }
     
-    public static Vehicles optimization_vehicle(Vehicle.Type type) {
-        Vehicles best_vehicle = Manager.getBestVehicle(type);
-        if(best_vehicle.getKm_before_maintenace() != Double.POSITIVE_INFINITY) {
-            return best_vehicle;
-        }
-        throw new IllegalArgumentException("No vehicle to choose");
-    }
-    
     //help method 
     public static boolean check_suitable(Drivers.License li, Vehicles.Type type) {
         if(li.equals(Drivers.License.B2) && type.equals(Vehicles.Type.car)) {
