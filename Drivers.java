@@ -22,6 +22,7 @@ public class Drivers {
     private License license;
     private int experiences; //years of experiences (can be int)
     private Status status;
+    private int perfromance;
     private int id;
 
     Drivers() {
@@ -36,6 +37,18 @@ public class Drivers {
         this.experiences = experiences;
         this.status = Status.ready;
         this.id = id;
+        this.perfromance = 100;
+    }
+    
+    Drivers(Drivers driver) {
+        this.name = driver.getName();
+        this.phone_number = driver.getPhonenumber();
+        this.address = driver.getAddress();
+        this.license = driver.getLicense();
+        this.experiences = driver.getExperiences();
+        this.status = driver.getStatus();
+        this.id = driver.getId();
+        this.perfromance = driver.getPerformance();
     }
     
     public String getName() { 
@@ -59,7 +72,16 @@ public class Drivers {
     public int getId() {
         return this.id;
     }
+    public int getPerformance() {
+        return this.perfromance;
+    }
     
+    public void reducePerformance(int num) {
+        this.perfromance -= num;
+    }
+    public void resetPerformnance() {
+        this.perfromance = 100;
+    }
     public void changeName(String new_name) {
         this.name = new_name;
     }
@@ -76,10 +98,10 @@ public class Drivers {
         }
     }
      
-    public int getProfit() { //lay tien luong chay xe 1h theo bang lai xe
-        if(this.license.equals(Drivers.License.B2)) {
+    public static int getProfit(Drivers.License license) { //lay tien luong chay xe 1h theo bang lai xe
+        if(license.equals(Drivers.License.B2)) {
             return 10;
-        } else if(this.license.equals(Drivers.License.C) || this.license.equals(Drivers.License.D) ) {
+        } else if(license.equals(Drivers.License.C) || license.equals(Drivers.License.D) ) {
             return 30;
         } else {
             return 40;

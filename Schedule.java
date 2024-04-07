@@ -1,13 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Admin
- */
-import java.util.Map;
+import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
 public class Schedule {
@@ -50,5 +41,10 @@ public class Schedule {
    }
    public static int get_second(LocalDateTime dateTime) {
        return dateTime.getSecond();
+   }
+   
+   public static String format_time(LocalDateTime time) {
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+       return time.format(formatter);
    }
 }

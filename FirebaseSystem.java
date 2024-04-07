@@ -26,13 +26,15 @@ import java.util.Map;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FirebaseSystem {
     private DatabaseReference myRef;
     public Map<String, Users> usersManager;
     public Map<String, Drivers> driversManager;
     public Map<String, Vehicles> vehiclesManager;
-    public Map<String, Trip> tripManager;
+    public Map<String, Trips> tripManager;
     
     FirebaseSystem() throws IOException {
         init_Firebase();
@@ -60,8 +62,50 @@ public class FirebaseSystem {
         DatabaseReference usersRef = this.myRef.child("Users");
         DatabaseReference vehiclesRef = this.myRef.child("Vehicles");
         DatabaseReference driversRef = this.myRef.child("Drivers");
-        DatabaseReference tripRef = this.myRef.child("Trip");
+        DatabaseReference tripsRef = this.myRef.child("Trips");
         
+        tripsRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
+            @Override
+            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    try {
+                        // Lặp qua từng child (mỗi chuyến đi)
+                        String tripId = childSnapshot.getKey(); // Lấy ID của chuyến đi
+                        
+                        String time_start = childSnapshot.child("time_start").getValue(String.class);
+                        String date_start = childSnapshot.child("date_start").getValue(String.class);
+                        
+                        String start_temp = childSnapshot.child("destination_start").getValue(String.class);
+                        Trips.Destination destination_start = Trips.Destination.fromString(start_temp);
+                        
+                        String end_temp = childSnapshot.child("destination_end").getValue(String.class);
+                        Trips.Destination destination_end = Trips.Destination.fromString(end_temp);
+                        
+                        String jsonString_driver = childSnapshot.child("driver").getValue().toString();
+                        Type type_driver = new TypeToken<Drivers>() {}.getType();
+                        Drivers driver = new Gson().fromJson(jsonString_driver, type_driver);
+                        
+                        String jsonString_vehicle = childSnapshot.child("vehicle").getValue().toString();
+                        Type type_vehicle = new TypeToken<Vehicles>() {}.getType();
+                        Vehicles vehicle = new Gson().fromJson(jsonString_vehicle, type_vehicle);
+                        
+                        int id = childSnapshot.child("id").getValue(Integer.class);
+                        
+                        Trips trip = new Trips(time_start, date_start, destination_start, destination_end, vehicle, driver, id);
+                        tripManager.put(tripId, trip); // Thêm chuyến đi vào Map với khóa là ID của chuyến đi
+                    } catch (Exception ex) {
+                        Logger.getLogger(FirebaseSystem.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                };
+                System.out.println("Trips data loaded succesfully");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) { //xu li loi
+                System.err.println("Error while reading: " + error.getMessage());
+            }
+            
+        });
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
             @Override
             public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
@@ -99,21 +143,6 @@ public class FirebaseSystem {
                 Type type = new TypeToken<Map<String, Vehicles>>() {}.getType();
                 vehiclesManager = new Gson().fromJson(jsonString, type);
                 System.out.println("Vehicles data loaded succesfully");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) { //xu li loi
-                System.err.println("Error while reading: " + error.getMessage());
-            }
-            
-        });
-        tripRef.addListenerForSingleValueEvent(new ValueEventListener() { //se kich hoat mien firebase co data
-            @Override
-            public void onDataChange(DataSnapshot snapshot) { //chuyen doi data dang json_tree thanh map
-                String jsonString = snapshot.getValue().toString();
-                Type type = new TypeToken<Map<String, Trip>>() {}.getType();
-                tripManager = new Gson().fromJson(jsonString, type);
-                System.out.println("Trip loaded succesfully");
             }
 
             @Override
@@ -172,8 +201,8 @@ public class FirebaseSystem {
         else if(className.equals("Vehicles")) {
             vehiclesManager.put(new_key, (Vehicles)obj);
         }
-        else if(className.equals("Trip")) {
-            tripManager.put(new_key, (Trip)obj);
+        else if(className.equals("Trips")) {
+            tripManager.put(new_key, (Trips)obj);
         }
         else {
             System.out.print("Data invalid");
@@ -202,8 +231,8 @@ public class FirebaseSystem {
                 if(vehicle_data.getId() == check_data)
                     return temp_entry.getKey();
             }
-            else if(className.equals("Trip")) {
-                Trip trip_data = (Trip)data;
+            else if(className.equals("Trips")) {
+                Trips trip_data = (Trips)data;
                 int check_data = (int)Manager.getFieldValue(obj, "id");
                 if(trip_data.getId() == check_data)
                     return temp_entry.getKey();
@@ -217,7 +246,7 @@ public class FirebaseSystem {
         if("Users".equals(className)) {temp_map = usersManager;}
         else if("Vehicles".equals(className)) {temp_map = vehiclesManager;}
         else if("Drivers".equals(className)) {temp_map = driversManager;}
-        else if("Trip".equals(className)) {temp_map = tripManager;}
+        else if("Trips".equals(className)) {temp_map = tripManager;}
         else {
             System.out.println("Deleted fail");
             return ;
@@ -244,8 +273,8 @@ public class FirebaseSystem {
                 Drivers data = (Drivers)entry.getValue();
                 objsToRemove.add(data);
             }
-            else if(className.equals("Trip")) {
-                Trip data = (Trip)entry.getValue();
+            else if(className.equals("Trips")) {
+                Trips data = (Trips)entry.getValue();
                 objsToRemove.add(data);
             }
         }
@@ -254,7 +283,7 @@ public class FirebaseSystem {
             delete(obj);
         }
     }
-    public void read(Object obj) {
+    public void read(Object obj) throws Exception {
         String className = obj.getClass().getSimpleName();
         if(className.equals("Users")) {
             Users data = (Users)obj;
@@ -285,8 +314,8 @@ public class FirebaseSystem {
                                 + ", Status: " + data.getStatus().toString()
             );
         }
-        else if(className.equals("Trip")) {
-            Trip data = (Trip)obj;
+        else if(className.equals("Trips")) {
+            Trips data = (Trips)obj;
             System.out.println("Id: " + data.getId()
                                 + ", Start: " + data.getDestination_start().toString()
                                 + ", End: " + data.getDestination_end().toString()
@@ -296,13 +325,14 @@ public class FirebaseSystem {
                                 + ", Driver's name: " + data.getDriver().getName()
                                 + ", Driver's phone number: " + data.getDriver().getPhonenumber()
                                 + ", Type of vehicle: " + data.getVehicle().getType().toString()
+                                + ", Trip's cost: " + data.caculate_trip_cost()
             );
         }
         else {
             System.out.println("Invalid data to read");
         }
     }
-    public void read_map(Map<String, ?> map) {  
+    public void read_map(Map<String, ?> map) throws Exception {  
         String className = map.values().iterator().next().getClass().getSimpleName();
         for(Map.Entry<String, ?> entry : map.entrySet()) {
             if(className.equals("Users")) {
@@ -317,8 +347,8 @@ public class FirebaseSystem {
                 Drivers data = (Drivers)entry.getValue();
                 read(data);
             }
-            else if(className.equals("Trip")) {
-                Trip data = (Trip)entry.getValue();
+            else if(className.equals("Trips")) {
+                Trips data = (Trips)entry.getValue();
                 read(data);
             }
         }
@@ -347,7 +377,7 @@ public class FirebaseSystem {
                         is_best_license = true;
                     }
                 }
-                else if(Trip.check_suitable(data.getLicense(), type) && !is_best_license) {
+                else if(Trips.check_suitable(data.getLicense(), type) && !is_best_license) {
                     if(data.getExperiences() >= driver_temp.getExperiences()) {
                         driver_temp = data;
                     }
@@ -361,6 +391,11 @@ public class FirebaseSystem {
         else {
             return driver_temp;
         }
+    }
+    
+    public void update_object(Map<String, ?> map) {
+        String className = map.values().iterator().next().getClass().getSimpleName();
+        this.myRef.child(className).updateChildrenAsync((Map<String, Object>) map);
     }
 }
 

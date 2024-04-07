@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 // Using Singleton pattern
 public class Manager {
@@ -40,11 +42,19 @@ public class Manager {
     public static void removeAllUsers() {
         firebase.delete_map(firebase.usersManager);
     }
-    public static void readUser(Users user) {
+    public static void readUser(Users user) throws Exception {
         firebase.read(user);
     }      
-    public static void readAllUsers() {
-        firebase.read_map(firebase.usersManager);
+    public static void readAllUsers() throws Exception {
+        try {
+            firebase.read_map(firebase.usersManager);
+        } catch (Exception ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public static void updateUsers() {
+        firebase.update_object(firebase.usersManager);
+        System.out.println("Users updated successfully");
     }
     public static int getNumOfUsers() {
         return firebase.usersManager.size();
@@ -69,11 +79,15 @@ public class Manager {
     public static void removeAllDrivers() {
         firebase.delete_map(firebase.driversManager);
     }
-    public static void readDriver(Drivers driver) {
+    public static void readDriver(Drivers driver) throws Exception {
         firebase.read(driver);
     }      
-    public static void readAllDrivers() {
+    public static void readAllDrivers() throws Exception {
         firebase.read_map(firebase.driversManager);
+    }
+    public static void updateDrivers() {
+        firebase.update_object(firebase.driversManager);
+        System.out.println("Drivers updated successfully");
     }
     public static Drivers getBestDriver(Vehicles.Type type) {
        Drivers best_driver = (Drivers)firebase.get_best_object(type, firebase.driversManager);
@@ -82,13 +96,12 @@ public class Manager {
        }
        throw new IllegalArgumentException("No suitbale driver to choose");
     }
-
     // Vehicles
     public static void addVehicle(Vehicles vehicle) {
         try {
                 firebase.add(vehicle);
         } catch (IllegalAccessException e) {
-                System.out.println("Failed to add object!");
+                System.out.println("Failed to add vehicle!");
                 return;
         }
         System.out.println("Vehicle added successfully!");
@@ -102,11 +115,19 @@ public class Manager {
     public static void removeAllVehicles() {
         firebase.delete_map(firebase.vehiclesManager);
     }
-    public static void readVehicle(Vehicles vehicle) {
+    public static void readVehicle(Vehicles vehicle) throws Exception {
         firebase.read(vehicle);
     }      
-    public static void readAllVehicles() {
-        firebase.read_map(firebase.vehiclesManager);
+    public static void readAllVehicles() throws Exception {
+        try {
+            firebase.read_map(firebase.vehiclesManager);
+        } catch (Exception ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public static void updateVehicles() {
+        firebase.update_object(firebase.vehiclesManager);
+        System.out.println("Vehicles updated successfully");
     }
     public static Vehicles getBestVehicle(Vehicles.Type type) {
        Vehicles best_vehicle = (Vehicles)firebase.get_best_object(type, firebase.vehiclesManager);
@@ -119,34 +140,47 @@ public class Manager {
 
     }
 
-    // Trip
-    public static void addTrip(Trip trip) {
+    // Trips
+    public static void addTrip(Trips trip) {
         try {
                 firebase.add(trip);
         } catch (IllegalAccessException e) {
-                System.out.println("Failed to add object!");
+                System.out.println("Failed to add trip!");
                 return;
         }
         System.out.println("Trip added successfully!");
     }
-    public static void removeTrip(Trip trip) {
+    public static void removeTrip(Trips trip) {
         firebase.delete(trip);
     }
     public static void removeAllTrip() {
         firebase.delete_map(firebase.tripManager);
     }
-    public static void readTrip(Trip trip) {
+    public static void readTrip(Trips trip) throws Exception {
         firebase.read(trip);
     }
-    public static void readAllTrip() {
-        firebase.read_map(firebase.tripManager);
+    public static void readAllTrip() throws Exception {
+        try {
+            firebase.read_map(firebase.tripManager);
+        } catch (Exception ex) {
+            Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public static void updateTrips() {
+        firebase.update_object(firebase.tripManager);
+        System.out.println("Trips updated successfully");
+    }
+    public static void makeTrip(Trips trip) throws Exception {
+        if(!trip.trip_on_ready()) {
+            System.out.println("Trip is not ready");
+        }
     }
     public static void makePlan() {
             // Planning and optimizing routes
     }
 
-    public static void calculateCosts() {
-            // Calculate expected costs
+    public static void calculateCosts(Trips trip) throws Exception {
+        System.out.println("Trip's cost is: " + trip.caculate_trip_cost());
     }
     public static int getNumOfTrips() {
         return firebase.tripManager.size();
@@ -175,7 +209,6 @@ public class Manager {
             field.setAccessible(true);
             return field.get(object);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
             return null;
         }
     }    
