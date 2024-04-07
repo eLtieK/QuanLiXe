@@ -52,7 +52,7 @@ public class Manager {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void updateUsers() {
+    public static void updateUsers() throws IllegalAccessException {
         firebase.update_object(firebase.usersManager);
         System.out.println("Users updated successfully");
     }
@@ -85,9 +85,15 @@ public class Manager {
     public static void readAllDrivers() throws Exception {
         firebase.read_map(firebase.driversManager);
     }
-    public static void updateDrivers() {
+    public static void updateDrivers() throws IllegalAccessException {
         firebase.update_object(firebase.driversManager);
         System.out.println("Drivers updated successfully");
+    }
+    public static Drivers getDriver(int id) throws Exception {
+        if(firebase.driversManager.isEmpty()) {
+            throw new Exception("No driver to get");
+        }
+        return (Drivers)firebase.get_object(firebase.driversManager, id);
     }
     public static Drivers getBestDriver(Vehicles.Type type) {
        Drivers best_driver = (Drivers)firebase.get_best_object(type, firebase.driversManager);
@@ -125,9 +131,15 @@ public class Manager {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void updateVehicles() {
+    public static void updateVehicles() throws IllegalAccessException {
         firebase.update_object(firebase.vehiclesManager);
         System.out.println("Vehicles updated successfully");
+    }
+    public static Vehicles getVehicle(int id) throws Exception {
+        if(firebase.vehiclesManager.isEmpty()) {
+            throw new Exception("No vehicle to get");
+        }
+        return (Vehicles)firebase.get_object(firebase.vehiclesManager, id);
     }
     public static Vehicles getBestVehicle(Vehicles.Type type) {
        Vehicles best_vehicle = (Vehicles)firebase.get_best_object(type, firebase.vehiclesManager);
@@ -166,7 +178,7 @@ public class Manager {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void updateTrips() {
+    public static void updateTrips() throws IllegalAccessException {
         firebase.update_object(firebase.tripManager);
         System.out.println("Trips updated successfully");
     }
@@ -201,6 +213,18 @@ public class Manager {
         }
 
         return objectMap;
+    }
+    public static Map<String, Object> getMapFieldsMap(Map<String, ?> map) throws IllegalAccessException {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        for (Map.Entry<String, ?> entry : map.entrySet()) {
+            String key = entry.getKey();
+            Map<String, Object> value = getObjectFieldsMap(entry.getValue());
+
+            resultMap.put(key, value);
+        }
+
+        return resultMap;
     }
     // Lay gia tri tu 1 field cu the
     public static Object getFieldValue(Object object, String fieldName) {

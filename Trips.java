@@ -1,20 +1,22 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Trips {
    enum Status {
         on_trip,
+        done,
         waiting;
-        
-        public static Trips.Status fromString(String text) {
-            for (Status status : Status.values()) {
-                if (status.name().equalsIgnoreCase(text)) {
-                    return status;
-                }
+    }   
+   public static Trips.Status fromStringStatus(String text) {
+        for (Status status : Status.values()) {
+            if (status.name().equalsIgnoreCase(text)) {
+                return status;
             }
-            throw new IllegalArgumentException("No constant with text " + text + " found in Status enum");
         }
-    }    
+        throw new IllegalArgumentException("No constant with text " + text + " found in Status enum");
+    }
    enum Destination {
        Ho_Chi_Minh,
        Ha_Noi,
@@ -22,41 +24,34 @@ public class Trips {
        Hue,
        Can_Tho,
        Hai_Phong;
-       
-       public static Destination fromString(String text) {
-            for (Destination des : Destination.values()) {
-                if (des.name().equalsIgnoreCase(text)) {
-                    return des;
-                }
-            }
-            throw new IllegalArgumentException("No constant with text " + text + " found in Destination enum");
-       }
    }
+   public static Destination fromStringDestination(String text) {
+        for (Destination des : Destination.values()) {
+            if (des.name().equalsIgnoreCase(text)) {
+                return des;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in Destination enum");
+   }
+   
     private String date_start; //(yyyy-mm-dd)
     private String time_start; //(HH:mm:ss)
-    private long time_remaining;
     private Destination destination_end;
     private Destination destination_start;
-    private long expected_time; //du kien thoi gian den
     private Status status;
-    private Vehicles vehicle;
-    private Drivers driver;
+    private int vehicle_id;
+    private int driver_id;
     private int id;
     
-    Trips() {
-        
-    };
-    Trips(String time_start, String date_start, Trips.Destination start, Trips.Destination end, Vehicles vehicle, Drivers driver, int id) throws Exception {
+    Trips(String time_start, String date_start, Trips.Destination start, Trips.Destination end, Trips.Status status, int vehicle, int driver, int id) throws Exception {
         this.time_start = time_start; 
         this.date_start = date_start;
         this.destination_start = start;
         this.destination_end = end;
-        this.status = Status.waiting;
-        this.driver = driver;
-        this.vehicle = vehicle;
+        this.status = status;
+        this.driver_id = driver;
+        this.vehicle_id = vehicle;
         this.id = id;
-        this.expected_time = caculate_expected_time();
-        this.time_remaining = caculate_expected_time();
     }
     public int getId() {
         return this.id;
@@ -67,8 +62,8 @@ public class Trips {
     public Trips.Destination getDestination_end() {
         return this.destination_end;
     }
-    public long getExpected_time() {
-        return this.expected_time;
+    public long getExpected_time() throws Exception {
+        return this.caculate_expected_time();
     }
     public Trips.Status getStatus() {
         return this.status;
@@ -76,27 +71,23 @@ public class Trips {
     public String getTime() {
         return Schedule.format_time(get_time());
     }
-    public Drivers getDriver() {
-        return this.driver;
+    public int getDriverId() {
+        return this.driver_id;
     }
-    public Vehicles getVehicle() {
-        return this.vehicle;
-    }
-    
-    public void setVehicle(Vehicles vehicle) {
-        this.vehicle = new Vehicles(vehicle);
-    }
-    public void setDriver(Drivers driver) {
-        this.driver = new Drivers(driver);
+    public int getVehicleId() {
+        return this.vehicle_id;
     }
     
     private long caculate_expected_time() throws Exception{
-        return (Trips.getDistance(this.destination_start ,this.destination_end) / this.driver.getAverageSpeed()) * 3600;
-    } 
+        Drivers driver = Manager.getInstance().getDriver(this.driver_id);
+        return (Trips.getDistance(this.destination_start ,this.destination_end) / driver.getAverageSpeed()) * 3600;
+    }
     
     public long caculate_trip_cost() throws Exception {
-        return ( (Vehicles.get_fuel_cosumption_rate(this.vehicle.getType(), this.vehicle.getFuel()) * Vehicles.get_price_fuel(this.vehicle.getFuel())) 
-                + (Drivers.getProfit(this.driver.getLicense())) ) * ( this.expected_time / 3600);
+        Vehicles vehicle = Manager.getInstance().getVehicle(this.vehicle_id);
+        Drivers driver = Manager.getInstance().getDriver(this.driver_id);
+        return ( (Vehicles.get_fuel_cosumption_rate(vehicle.getType(), vehicle.getFuel()) * Vehicles.get_price_fuel(vehicle.getFuel())) 
+                + (Drivers.getProfit(driver.getLicense())) ) * ( this.caculate_expected_time() / 3600);
     }
     
     public static int getDistance(Trips.Destination start, Trips.Destination end) throws Exception{
@@ -204,7 +195,8 @@ public class Trips {
     }
     
     public boolean trip_on_ready() throws Exception {
-        if(this.driver.getPerformance() < this.expected_time / 3600) {
+        Drivers driver = Manager.getInstance().getDriver(this.driver_id);
+        if(driver.getPerformance() < this.caculate_expected_time() / 3600) {
             System.out.println("Driver can't drive because of lack of performance");
             return false;
         }
@@ -218,24 +210,34 @@ public class Trips {
     
     public void trip_on_duty() throws Exception {
         Thread updateThread = new Thread(() -> {
-            while (this.time_remaining > 0) {
-                // Cập nhật dữ liệu hoặc thực hiện các tác vụ cần thiết ở đây
-                this.time_remaining -= 3600;
-                this.driver.reducePerformance(1);
-                System.out.println("Trip's id: " + this.id + " is making a trip ... " + (int)(((this.expected_time - this.time_remaining) * 100) / this.expected_time) + "%");
-                try {
-                    // Tạm ngừng luồng cập nhật trong 1 giây
-                    Thread.sleep(1000); // milliseconds
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                Drivers driver = Manager.getInstance().getDriver(this.driver_id);
+                long expected_time = this.caculate_expected_time();
+                long time_remaining = expected_time;
+                while (time_remaining > 0) {
+                    // Cập nhật dữ liệu hoặc thực hiện các tác vụ cần thiết ở đây
+                    time_remaining -= 3600;
+                    driver.reducePerformance(1);
+                    System.out.println("Trip's id: " + this.id + " is making a trip ... " + (int)(((expected_time - time_remaining) * 100) / expected_time) + "%");
+                    try {
+                        // Tạm ngừng luồng cập nhật trong 1 giây
+                        Thread.sleep(1000); // milliseconds
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+            } catch (Exception ex) {
+                Logger.getLogger(Trips.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         
-        if(this.time_remaining > 0) {
-            this.vehicle.increase_km(Trips.getDistance(this.destination_start, this.destination_end));
-
+        if(this.status.equals(Trips.Status.done)) {
+            Vehicles vehicle = Manager.getInstance().getVehicle(this.vehicle_id);
+            vehicle.increase_km(Trips.getDistance(this.destination_start, this.destination_end));
         }
-        updateThread.start();
+        else {
+            updateThread.start();
+            this.status = Trips.Status.done;
+        }
     }
 }
