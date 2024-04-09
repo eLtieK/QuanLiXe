@@ -1,3 +1,5 @@
+package database;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -173,14 +175,14 @@ public class FirebaseSystem {
         }
         return false;
     }
-    public boolean check_login_user(Users user) { //check dang nhap
+    public boolean check_login_user(String username, String password) { //check dang nhap
         if(usersManager.isEmpty()) {
             System.out.println("Check_Empty");
             return false;
         }
         for(Map.Entry<String, Users> userEntry : usersManager.entrySet()) { //duyet qua map
-            if(userEntry.getValue().getName().equals(user.getName())) { //so sanh 2 string giong nhau ko
-                if(userEntry.getValue().getPassword().equals(user.getPassword())) {
+            if(userEntry.getValue().getName().equals(username)) { //so sanh 2 string giong nhau ko
+                if(userEntry.getValue().getPassword().equals(password)) {
                     System.out.println("Login successfully");
                     return true;
                 }

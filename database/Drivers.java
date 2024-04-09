@@ -1,3 +1,5 @@
+package database;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -11,10 +13,27 @@ public class Drivers {
     enum License{
         B2,C,D,E
     }
+    public static Drivers.License fromStringLicense(String text) {
+        for (License li : License.values()) {
+            if (li.name().equalsIgnoreCase(text)) {
+                return li;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in License enum");
+    }
+    
     enum Status{ //add some status for drivers
         ready,
         working,
         not_available 
+    }
+    public static Drivers.Status fromStringStatus(String text) {
+        for (Status status : Status.values()) {
+            if (status.name().equalsIgnoreCase(text)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in Status enum");
     }
     private String name;
     private String phone_number;
@@ -29,7 +48,7 @@ public class Drivers {
         this.experiences = 0; 
     }
     
-    Drivers(String name, String phone_number, String address, License license, int experiences, int id) {
+    public Drivers(String name, String phone_number, String address, License license, int experiences, int id) {
         this.name = name;
         this.phone_number = phone_number;
         this.address = address;

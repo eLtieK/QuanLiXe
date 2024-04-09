@@ -1,3 +1,5 @@
+package database;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +37,9 @@ public class Manager {
             return ;
         }
         System.out.println("New account have been signed succesfully");
+    }
+    public static boolean checkLogin(String username, String password) {
+        return firebase.check_login_user(username, password);
     }
     public static void removeUser(Users user) {
         firebase.delete(user);
