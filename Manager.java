@@ -74,9 +74,17 @@ public class Manager {
         return firebase.driversManager.size();
     }
     public static void removeDriver(Drivers driver) {
+        if(firebase.is_object_in_trip(driver.getId(), firebase.driversManager)) {
+            System.out.println("Id: " + driver.getId() + ", this driver is in a trip");
+            return ;
+        }
         firebase.delete(driver);
     }
     public static void removeAllDrivers() {
+        if(!firebase.tripManager.isEmpty()) {
+            System.out.println("some drivers are in a trip");
+            return ;
+        }
         firebase.delete_map(firebase.driversManager);
     }
     public static void readDriver(Drivers driver) throws Exception {
@@ -116,9 +124,17 @@ public class Manager {
         return firebase.vehiclesManager.size();
     }
     public static void removeVehicle(Vehicles vehicle) {
+        if(firebase.is_object_in_trip(vehicle.getId(), firebase.vehiclesManager)) {
+            System.out.println("Id: " + vehicle.getId() + ", this vehicle is in a trip");
+            return ;
+        }
         firebase.delete(vehicle);
     }
     public static void removeAllVehicles() {
+        if(!firebase.tripManager.isEmpty()) {
+            System.out.println("some vehicles are in a trip");
+            return ;
+        }
         firebase.delete_map(firebase.vehiclesManager);
     }
     public static void readVehicle(Vehicles vehicle) throws Exception {
@@ -163,6 +179,9 @@ public class Manager {
         System.out.println("Trip added successfully!");
     }
     public static void removeTrip(Trips trip) {
+        if(!trip.is_trip_done()) {
+            return ;
+        }
         firebase.delete(trip);
     }
     public static void removeAllTrip() {

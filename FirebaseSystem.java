@@ -438,6 +438,24 @@ public class FirebaseSystem {
             return driver_temp;
         }
     }
+    
+    public boolean is_object_in_trip(int id, Map<String, ?> map) {
+        String className = map.values().iterator().next().getClass().getSimpleName();
+        for(Map.Entry<String, Trips> entry : tripManager.entrySet()) {
+            Trips data = entry.getValue();
+            if(className.equals("Vehicles")) {
+                if(data.getVehicleId() == id) {
+                    return true;
+                }
+            }
+            else if(className.equals("Drivers")) {
+                if(data.getDriverId() == id) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 
 	

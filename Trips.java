@@ -194,8 +194,24 @@ public class Trips {
         }
     }
     
+    public boolean is_trip_done() {
+        if(this.status.equals(Trips.Status.done)) {
+            System.out.println("This trip has been done");
+            return true;
+        } 
+        else if(this.status.equals(Trips.Status.waiting)) {
+            System.out.println("This trip is waiting to execute");
+        }
+        else if(this.status.equals(Trips.Status.on_trip)) {
+            System.out.println("This trip is on_duty");
+        }
+        return false;
+    }
     public boolean trip_on_ready() throws Exception {
         Drivers driver = Manager.getInstance().getDriver(this.driver_id);
+        if(is_trip_done()) {
+            return false;
+        }
         if(driver.getPerformance() < this.caculate_expected_time() / 3600) {
             System.out.println("Driver can't drive because of lack of performance");
             return false;
