@@ -1,5 +1,6 @@
 package database;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
@@ -25,6 +26,9 @@ public class Schedule {
    public static LocalDateTime get_now_time() {
        return LocalDateTime.now();
    }
+   public static String get_now_time_string() {
+       return Schedule.format_time(Schedule.get_now_time());
+   }
     
    public static int get_hour(LocalDateTime dateTime) {
        return dateTime.getHour();
@@ -49,4 +53,22 @@ public class Schedule {
        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
        return time.format(formatter);
    }
+   public static LocalDateTime get_date(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(date, formatter);
+    }
+   public static boolean check_logic_date(String start, String end) {
+       return Schedule.get_date(start).isBefore(Schedule.get_date(end));
+   }
+   public static boolean check_logic_date(String time) {
+       return Schedule.get_date(time).isBefore(Schedule.get_now_time()) || Schedule.get_date(time).isEqual(Schedule.get_now_time());
+   }
+   public static String convertSecondsToTimeString(long seconds) {
+        long hours = seconds / 3600;
+        long remainder = seconds % 3600;
+        long minutes = remainder / 60;
+        long remainingSeconds = remainder % 60;
+        
+        return String.format("%02d:%02d:%02d", hours, minutes, remainingSeconds);
+    }
 }

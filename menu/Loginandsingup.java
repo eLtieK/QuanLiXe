@@ -1,16 +1,20 @@
 
 package menu;
 
+import database.Manager;
+import java.io.IOException;
+
 /**
  *
  * @author User
  */
-public class LoginandSignup {
+public class Loginandsingup {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Manager manager = Manager.getInstance();
          Login LoginFrame = new Login();
          LoginFrame.setVisible(true);
          LoginFrame.pack();

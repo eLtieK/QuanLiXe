@@ -2,6 +2,8 @@ package database;
 
 
 import static java.lang.Math.abs;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -13,21 +15,66 @@ import static java.lang.Math.abs;
  * @author Admin
  */
 public class Vehicles {  
-    enum Type{ //add some type of vehicles
+    public enum Type{ //add some type of vehicles
         truck,
         coach, //xe khach
         car,
         container
     }
-    enum Fuel{ //add some fuel for vehicles
+    public static int index_type(Vehicles.Type ty) {
+        if(ty.equals(Vehicles.Type.truck)) {
+            return 0;
+        } else if(ty.equals(Vehicles.Type.coach)) {
+            return 1;
+        } else if(ty.equals(Vehicles.Type.car)) {
+            return 2;
+        } else {
+            return 3;
+        }
+    } 
+    public static Vehicles.Type fromStringType(String text) {
+        for (Type ty : Type.values()) {
+            if (ty.name().equalsIgnoreCase(text)) {
+                return ty;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in License enum");
+    }
+    public enum Fuel{ //add some fuel for vehicles
         diesel,
         gasoline,
         ethanol,
     }
-    enum Status{ //add some status for drivers
+    public static int index_fuel(Vehicles.Fuel fu) {
+        if(fu.equals(Vehicles.Fuel.diesel)) {
+            return 0;
+        } else if(fu.equals(Vehicles.Fuel.gasoline)) {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+    public static Vehicles.Fuel fromStringFuel(String text) {
+        for (Fuel fu : Fuel.values()) {
+            if (fu.name().equalsIgnoreCase(text)) {
+                return fu;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in License enum");
+    }
+    public enum Status{ //add some status for drivers
         ready,
         on_duty,
-        under_maintenance //dang bao duong
+        under_maintenance,      //dang bao duong
+        in_trip,             
+    }
+    public static Vehicles.Status fromStringStatus(String text) {
+        for (Status sta : Status.values()) {
+            if (sta.name().equalsIgnoreCase(text)) {
+                return sta;
+            }
+        }
+        throw new IllegalArgumentException("No constant with text " + text + " found in License enum");
     }
     private int weight;
     private int size;
@@ -37,12 +84,13 @@ public class Vehicles {
     private int id;
     private long all_km;
     private long km_before_maintenace;
-    //private String nickname; bonus feature :)) 
+    private String date_start; //(yyyy-mm-dd)
+    private String date_end; //(yyyy-mm-dd)
 
     Vehicles() {
         this.km_before_maintenace = Long.MAX_VALUE;
     }
-    Vehicles(int weight, int size, Fuel fuel, Type type, int id) {
+    public Vehicles(int weight, int size, Fuel fuel, Type type, int id) {
         this.weight = weight;
         this.size = size;
         this.fuel = fuel;
@@ -51,16 +99,20 @@ public class Vehicles {
         this.id = id;
         this.all_km = 0;
         this.km_before_maintenace = 0;
+        this.date_start = "0000-00-00 00:00:00";
+        this.date_end = "0000-00-00 00:00:00";
     }
-    Vehicles(Vehicles vehicle) {
-        this.weight = vehicle.getWeight();
-        this.size = vehicle.getSize();
-        this.fuel = vehicle.getFuel();
-        this.type = vehicle.getType();
-        this.status = vehicle.getStatus();
-        this.id = vehicle.getId();
-        this.all_km = vehicle.getAll_km();
-        this.km_before_maintenace = vehicle.getKm_before_maintenace();
+    public Vehicles(int weight, int size, Vehicles.Fuel fuel, Vehicles.Type type, int id, Vehicles.Status status, long all_km, long km_bef, String start, String end) {
+        this.weight = weight;
+        this.size = size;
+        this.fuel = fuel;
+        this.type = type;
+        this.status = status;
+        this.id = id;
+        this.all_km = all_km;
+        this.km_before_maintenace = km_bef;
+        this.date_start = start;
+        this.date_end = end;
     }
     
     public int getWeight() {
@@ -87,6 +139,34 @@ public class Vehicles {
     public long getKm_before_maintenace() {
         return this.km_before_maintenace;
     }
+    public String getDate_start() {
+        return this.date_start;
+    }
+    public String getDate_end() {
+        return this.date_end;
+    }
+    
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+    public void setSize(int size) {
+        this.size = size;
+    }
+    public void setType(String ty) {
+        this.type = Vehicles.fromStringType(ty);
+    }
+    public void setFuel(String fu) {
+        this.fuel = Vehicles.fromStringFuel(fu);
+    }
+    public void setDate_start(String start) {
+        this.date_start = start;
+    }
+    public void setDate_end(String end) {
+        this.date_end = end;
+    }
+    public void setStatus(Vehicles.Status sta) {
+        this.status = sta;
+    }
     
     public Drivers.License get_suitable_license () {
         if(this.type.equals(Vehicles.Type.car)) {
@@ -102,6 +182,20 @@ public class Vehicles {
             return Drivers.License.E;
         }
     }
+    public String get_all_suitable_license () {
+        if(this.type.equals(Vehicles.Type.car)) {
+            return "B2, C, D, E";
+        }
+        else if(this.type.equals(Vehicles.Type.coach)) {
+            return "C, D, E";
+        }
+        else if(this.type.equals(Vehicles.Type.truck)) {
+            return "D, E";
+        }
+        else {
+            return "E";
+        }
+    }
     
     public boolean is_need_maintenace () {
         if(this.km_before_maintenace >= 10000) {
@@ -110,26 +204,10 @@ public class Vehicles {
         return false;
     }
     
-    public void maintenace() {
-        Thread updateThread = new Thread(() -> {
-            long km = this.km_before_maintenace;
-            while (this.km_before_maintenace > 0) {
-                // Cập nhật dữ liệu hoặc thực hiện các tác vụ cần thiết ở đây
-                this.km_before_maintenace -= 1000;
-                System.out.println("Vehicle's id: " + this.id + " is under maintenace ... " + (int)(abs((km - this.km_before_maintenace) * 100) / km) + "%");
-                try {
-                    // Tạm ngừng luồng cập nhật trong 1 giây
-                    Thread.sleep(1000); // milliseconds
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        
-        updateThread.start();
-        this.km_before_maintenace = 0;
-        this.status = Vehicles.Status.under_maintenance;
+    public boolean is_maintenance () {
+        return !this.date_start.equals("0000-00-00 00:00:00") && !this.date_end.equals("0000-00-00 00:00:00");
     }
+
     public static int get_price_fuel(Vehicles.Fuel fuel) throws Exception {
         switch (fuel) {
             case Vehicles.Fuel.diesel:
@@ -187,5 +265,29 @@ public class Vehicles {
     public void increase_km(int distance) {
         this.all_km += distance;
         this.km_before_maintenace += distance;
+    }
+    public void reset_km() {
+        this.km_before_maintenace = 0;
+    }
+    public void make_vehicle_in_trip() {
+        this.status = Vehicles.Status.in_trip;
+    }
+    public void make_vehicle_ready() {
+        this.status = Vehicles.Status.ready;
+    }
+    public boolean check_vehicle_in_trip() {
+        return (this.status.equals(Vehicles.Status.in_trip));
+    }
+    public LocalDateTime get_start_date() {
+         return LocalDateTime.parse(date_start, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+    public LocalDateTime get_end_date() {
+        return LocalDateTime.parse(date_end, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+    public boolean chech_start() {
+        return get_start_date().isBefore(Schedule.get_now_time()) || get_start_date().isEqual(Schedule.get_now_time());
+    }
+    public boolean chech_end() {
+        return get_end_date().isBefore(Schedule.get_now_time()) || get_end_date().isEqual(Schedule.get_now_time());
     }
 }

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <Properties>
+    <Property name="defaultCloseOperation" type="int" value="3"/>
+  </Properties>
+  <SyntheticProperties>
+    <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+  </SyntheticProperties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="Type" alignment="0" max="32767" attributes="0"/>
+              <Component id="Fuel" alignment="0" max="32767" attributes="0"/>
+              <Component id="Weight" alignment="0" max="32767" attributes="0"/>
+              <Component id="Size" alignment="0" max="32767" attributes="0"/>
+              <Component id="All_km" alignment="0" max="32767" attributes="0"/>
+              <Component id="Km_before" alignment="0" max="32767" attributes="0"/>
+              <Component id="Is_main" alignment="0" max="32767" attributes="0"/>
+              <Component id="Fuel_price" alignment="0" max="32767" attributes="0"/>
+              <Component id="Status" alignment="1" max="32767" attributes="0"/>
+              <Component id="jSeparator1" alignment="0" max="32767" attributes="0"/>
+              <Component id="License" alignment="0" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Start" min="-2" pref="75" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="End" min="-2" pref="75" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Save" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="Schedule_maintenance" min="-2" pref="153" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="Close" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="12" max="32767" attributes="0"/>
+              </Group>
+              <Component id="mainStart" alignment="0" max="32767" attributes="0"/>
+              <Component id="mainEnd" alignment="0" max="32767" attributes="0"/>
+              <Component id="Fuel_rate" alignment="0" max="32767" attributes="0"/>
+              <Component id="ID" alignment="0" max="32767" attributes="0"/>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="ID" min="-2" pref="16" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Type" min="-2" pref="16" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Fuel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Weight" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Size" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Status" min="-2" pref="16" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="All_km" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Km_before" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Is_main" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Fuel_price" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="Fuel_rate" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="License" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="mainStart" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="mainEnd" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="Save" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="End" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="Schedule_maintenance" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="Start" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="Close" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JLabel" name="ID">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="ID:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Type">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Type:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Weight">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Weight:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Fuel">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Fuel:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Size">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Size:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Status">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Status:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="All_km">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="All km:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Km_before">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Km before maintenace:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Is_main">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Is need maintenace:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Fuel_price">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Price  of fuel / liter:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="mainEnd">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Maintenance end date:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="mainStart">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Maintenance start date:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="License">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Suitable license type: "/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="Fuel_rate">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Fuel consumption rate / hour: "/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JSeparator" name="jSeparator1">
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jSeparator1MouseClicked"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="Start">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Start date"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="StartMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StartActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="Save">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Save"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="SaveActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="End">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="End date"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="EndMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="EndActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="Schedule_maintenance">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Schedule maintenance"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Schedule_maintenanceActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="Close">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Close"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CloseActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
+  </SubComponents>
+</Form>
