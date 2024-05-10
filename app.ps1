@@ -1,0 +1,1 @@
+cd E:\HocTap\QuanLiXe\app; ..\gradlew.bat --configure-on-demand -x check run
